@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vk_chat/vk.dart';
 
 class HomePage extends StatefulWidget {
   final String title = "home page";
@@ -9,9 +10,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Widget currentPage = new Center();
+  VK vk = new VK();
 
   @override
   Widget build(BuildContext context) {
+    vk.login((isLoggedIn) => print("loged in"));
+
     return new Scaffold(
       drawer: _buildDrawer(),
       appBar: new AppBar(
