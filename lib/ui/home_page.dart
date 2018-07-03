@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:vk_chat/vk.dart';
+import 'package:vk_chat/ui/chats_list_page.dart';
+import 'package:vk_chat/ui/friends_list_page.dart';
+import 'package:vk_chat/vk/vk.dart';
 
 class HomePage extends StatefulWidget {
   final String title = "home page";
@@ -9,12 +13,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Widget currentPage = new Center();
+  Widget currentPage = new FriendsListPage();
   VK vk = new VK();
 
   @override
   Widget build(BuildContext context) {
-    vk.login((isLoggedIn) => print("loged in"));
+    vk.login((isLoggedIn) => loginResult(isLoggedIn));
 
     return new Scaffold(
       drawer: _buildDrawer(),
@@ -24,6 +28,24 @@ class _HomePageState extends State<HomePage> {
       ),
       body: currentPage,
     );
+  }
+
+  Widget loginResult(bool isLoggedIn) {
+    if(isLoggedIn) {
+      return new Scaffold(
+        drawer: _buildDrawer(),
+        appBar: new AppBar(
+          title: new Text(widget.title),
+          elevation: Theme
+              .of(context)
+              .platform == TargetPlatform.iOS ? 0.0 : 4.0,
+        ),
+        body: currentPage,
+      );
+    } else {
+      exit(0);
+      return new Center();
+    }
   }
 
   Drawer _buildDrawer() {
@@ -76,13 +98,13 @@ class _HomePageState extends State<HomePage> {
 
   void _onMessagesTap() {
     setState(() {
-
+      currentPage = new ChatsListPage();
     });
   }
 
   void _onFriendsTap() {
     setState(() {
-
+      currentPage = new FriendsListPage();
     });
   }
 

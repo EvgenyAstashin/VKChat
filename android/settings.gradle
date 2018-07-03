@@ -1,4 +1,4 @@
-include ':vksdk_library',':app'
+include ':app', ':vksdk'
 
 def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
 
