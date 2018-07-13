@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vk_chat/models/user.dart';
-import 'package:vk_chat/ui/friend_item.dart';
+import 'package:vk_chat/models/profile.dart';
+import 'package:vk_chat/ui/items/friend_item.dart';
 import 'package:vk_chat/vk/vk.dart';
-
-import 'dart:convert';
 
 class FriendsListPage extends StatefulWidget {
   @override
@@ -13,7 +11,7 @@ class FriendsListPage extends StatefulWidget {
 class _FriendsListPageState extends State<FriendsListPage> {
   VK vk = new VK();
   List friendIds = new List();
-  List<User> friendsInfo = new List();
+  List<Profile> friendsInfo = new List();
   int friends = 0;
   int friendLoaded = 0;
   Widget mainWidget = new CircularProgressIndicator();
@@ -34,14 +32,14 @@ class _FriendsListPageState extends State<FriendsListPage> {
     friendIds.insert(0, 0);
     this.friendIds.addAll(friendIds);
     friends = friendIds.length;
-    vk.getFriendsInfo(friendIds).then((List<User> friendsInfo) => showFriends(friendsInfo));
+    vk.getFriendsInfo(friendIds).then((List<Profile> friendsInfo) => showFriends(friendsInfo));
   }
 
-  void showFriends(List<User> friendsInfo) {
+  void showFriends(List<Profile> friendsInfo) {
     this.friendsInfo.addAll(friendsInfo);
     setState(() {
       mainWidget = new ListView(
-          children: this.friendsInfo.map((User user) {
+          children: this.friendsInfo.map((Profile user) {
             return new FriendItem(user);
           }).toList());
     });

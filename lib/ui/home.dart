@@ -1,19 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:vk_chat/ui/chats_list_page.dart';
-import 'package:vk_chat/ui/friends_list_page.dart';
+import 'package:vk_chat/ui/chats_list.dart';
+import 'package:vk_chat/ui/friends_list.dart';
 import 'package:vk_chat/vk/vk.dart';
 
 class HomePage extends StatefulWidget {
-  final String title = "home page";
+  String title = "Сообщения";
 
   @override
   _HomePageState createState() => new _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  Widget currentPage = new FriendsListPage();
+  Widget currentPage = new ChatsListPage();
   VK vk = new VK();
 
   @override
@@ -98,13 +98,17 @@ class _HomePageState extends State<HomePage> {
 
   void _onMessagesTap() {
     setState(() {
+      widget.title = "Сообщения";
       currentPage = new ChatsListPage();
+      Navigator.pop(context, true);
     });
   }
 
   void _onFriendsTap() {
     setState(() {
+      widget.title = "Друзья";
       currentPage = new FriendsListPage();
+      Navigator.pop(context, true);
     });
   }
 

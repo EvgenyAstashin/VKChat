@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vk_chat/ui/home_page.dart';
+import 'package:vk_chat/ui/home.dart';
 
 void main() {
   runApp(new MyApp());

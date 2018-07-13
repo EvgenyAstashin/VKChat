@@ -34,6 +34,20 @@ import org.json.JSONObject;
  * Builds requests for API.messages part
  */
 public class VKApiMessages extends VKApiBase {
+
+    public VKRequest getConversations() {
+        return getConversations(VKParameters.from(VKApiConst.COUNT, "10"));
+    }
+
+    public VKRequest getConversations(VKParameters params) {
+        return prepareRequest("getConversations", params, new VKParser() {
+            @Override
+            public Object createModel(JSONObject object) {
+                return object.toString();
+            }
+        });
+    }
+
     /**
      * Returns messages current user
      *

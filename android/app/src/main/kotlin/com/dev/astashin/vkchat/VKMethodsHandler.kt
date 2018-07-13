@@ -21,6 +21,8 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
         const val GET_FRIENDS = "friends"
 
         const val GET_FRIENDS_INFO = "friends_info"
+
+        const val GET_CONVERSATIONS = "conversations"
     }
 
     private var token: VKAccessToken? = null
@@ -37,6 +39,8 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
             getFriends()
         if (p0?.method == GET_FRIENDS_INFO)
             getFriendsInfo(p0)
+        if (p0?.method == GET_CONVERSATIONS)
+            getConversations(p0)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -54,7 +58,11 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
     }
 
     private fun login() {
-        VKSdk.login(activity)
+        if(VKSdk.isLoggedIn()) {
+            methodResult?.success(true)
+        } else {
+            VKSdk.login(activity, "messages")
+        }
     }
 
     private fun getFriends() {
@@ -91,5 +99,23 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
                 methodResult?.error("error", "error", null)
             }
         })
+    }
+
+    private fun getConversations(p0: MethodCall?) {
+        val request = VKApi.messages().getConversations(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
+        request.executeWithListener(object : VKRequestListener() {
+            override fun onComplete(response: VKResponse) {
+                methodResult?.success(response.responseString)
+            }
+
+            override fun onError(error: VKError) {
+                methodResult?.error("error", "error", null)
+            }
+
+            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
+                methodResult?.error("error", "error", null)
+            }
+        })
+
     }
 }

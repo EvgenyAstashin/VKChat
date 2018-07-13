@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:vk_chat/models/user.dart';
+import 'package:vk_chat/models/profile.dart';
 
 class FriendItem extends StatefulWidget {
 
-  User user;
+  Profile user;
 
-  FriendItem(User user) : user = user,
+  FriendItem(Profile user) : user = user,
         super(key: new ObjectKey(user));
 
   @override
@@ -16,7 +16,7 @@ class FriendItem extends StatefulWidget {
 
 class FriendItemState extends State<FriendItem> {
 
-  User user;
+  Profile user;
 
   FriendItemState(this.user);
 
@@ -37,7 +37,11 @@ class FriendItemState extends State<FriendItem> {
           children: <Widget>[
             new Expanded(child: new Text("${user.firstName} ${user.lastName}")),
           ],
-        )
+        ),
+      trailing: new IconButton(
+        icon: new Icon(Icons.chat),
+        onPressed: () {  },
+      ),
     );
   }
 }
