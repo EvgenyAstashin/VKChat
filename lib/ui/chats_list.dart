@@ -37,13 +37,6 @@ class _ChatsListPageState extends State<ChatsListPage> {
             return new ConversationItem(conversation, conversationHandler);
           }
       );
-
-
-
-//      mainWidget = new ListView(
-//          children: conversationHandler.conversations.map((Conversation conversation) {
-//            return new ConversationItem(conversation, conversationHandler);
-//          }).toList());
     });
   }
 

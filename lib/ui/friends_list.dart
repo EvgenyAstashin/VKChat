@@ -32,7 +32,7 @@ class _FriendsListPageState extends State<FriendsListPage> {
     friendIds.insert(0, 0);
     this.friendIds.addAll(friendIds);
     friends = friendIds.length;
-    vk.getFriendsInfo(friendIds).then((List<Profile> friendsInfo) => showFriends(friendsInfo));
+    vk.getUsersInfo(friendIds).then((List<Profile> friendsInfo) => showFriends(friendsInfo));
   }
 
   void showFriends(List<Profile> friendsInfo) {

@@ -21,6 +21,7 @@
 
 package com.vk.sdk.api;
 
+import com.vk.sdk.api.methods.VKApiAccount;
 import com.vk.sdk.api.methods.VKApiAudio;
 import com.vk.sdk.api.methods.VKApiDocs;
 import com.vk.sdk.api.methods.VKApiFriends;
@@ -41,6 +42,11 @@ import java.io.File;
  Provides access for API parts.
  */
 public class VKApi {
+
+    public static VKApiAccount account() {
+        return new VKApiAccount();
+    }
+
     /**
      * https://vk.com/dev/users
      * Returns object for preparing requests to users part of API

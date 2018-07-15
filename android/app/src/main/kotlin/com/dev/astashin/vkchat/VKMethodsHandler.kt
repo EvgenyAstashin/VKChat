@@ -2,6 +2,7 @@ package com.dev.astashin.vkchat
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import com.vk.sdk.VKAccessToken
 import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
@@ -20,9 +21,11 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
 
         const val GET_FRIENDS = "friends"
 
-        const val GET_FRIENDS_INFO = "friends_info"
+        const val GET_USERS_INFO = "users_info"
 
         const val GET_CONVERSATIONS = "conversations"
+
+        const val GET_ACCOUNT_INFO = "account_info"
     }
 
     private var token: VKAccessToken? = null
@@ -34,13 +37,15 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
         this.methodResult = p1
 
         if (p0?.method == LOGIN_METHOD)
-            login()
+            login(p1)
         if (p0?.method == GET_FRIENDS)
-            getFriends()
-        if (p0?.method == GET_FRIENDS_INFO)
-            getFriendsInfo(p0)
+            getFriends(p1)
+        if (p0?.method == GET_USERS_INFO)
+            getUsersInfo(p0, p1)
         if (p0?.method == GET_CONVERSATIONS)
-            getConversations(p0)
+            getConversations(p0, p1)
+        if (p0?.method == GET_ACCOUNT_INFO)
+            getAccountInfo(p1)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -57,7 +62,7 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
             })
     }
 
-    private fun login() {
+    private fun login(methodResult: MethodChannel.Result?) {
         if(VKSdk.isLoggedIn()) {
             methodResult?.success(true)
         } else {
@@ -65,7 +70,7 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
         }
     }
 
-    private fun getFriends() {
+    private fun getFriends(methodResult: MethodChannel.Result?) {
         val params = HashMap<String, Any>()
         params["order"] = "hints"
         val request = VKApi.friends().get(VKParameters(params))
@@ -84,7 +89,7 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
         })
     }
 
-    private fun getFriendsInfo(p0: MethodCall?) {
+    private fun getUsersInfo(p0: MethodCall?, methodResult: MethodChannel.Result?) {
         val request = VKApi.users().get(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
         request.executeWithListener(object : VKRequestListener() {
             override fun onComplete(response: VKResponse) {
@@ -101,7 +106,7 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
         })
     }
 
-    private fun getConversations(p0: MethodCall?) {
+    private fun getConversations(p0: MethodCall?, methodResult: MethodChannel.Result?) {
         val request = VKApi.messages().getConversations(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
         request.executeWithListener(object : VKRequestListener() {
             override fun onComplete(response: VKResponse) {
@@ -116,6 +121,23 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
                 methodResult?.error("error", "error", null)
             }
         })
+    }
 
+    private fun getAccountInfo(methodResult: MethodChannel.Result?) {
+        Log.e("getAccountInfo", "getAccountInfo")
+        val request = VKApi.account().profileInfo;
+        request.executeWithListener(object : VKRequestListener() {
+            override fun onComplete(response: VKResponse) {
+                methodResult?.success(response.responseString)
+            }
+
+            override fun onError(error: VKError) {
+                methodResult?.error("error", "error", null)
+            }
+
+            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
+                methodResult?.error("error", "error", null)
+            }
+        })
     }
 }
