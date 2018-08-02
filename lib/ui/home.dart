@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Widget currentPage;
   Widget drawerHeader;
-  VK vk = new VK();
+  VK vk = VK.getInstance();
 
   @override
   void initState() {
@@ -76,6 +76,7 @@ class _HomePageState extends State<HomePage> {
 
       drawerHeader = new UserAccountsDrawerHeader(
         accountName: accountName,
+        accountEmail: null,
         currentAccountPicture: accountPicture,
         decoration: new BoxDecoration(color: Colors.black38),
       );

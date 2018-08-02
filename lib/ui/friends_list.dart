@@ -9,7 +9,7 @@ class FriendsListPage extends StatefulWidget {
 }
 
 class _FriendsListPageState extends State<FriendsListPage> {
-  VK vk = new VK();
+  VK vk = VK.getInstance();
   List friendIds = new List();
   List<Profile> friendsInfo = new List();
   int friends = 0;

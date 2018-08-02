@@ -4,13 +4,11 @@ import 'package:vk_chat/models/conversation.dart';
 import 'package:vk_chat/ui/items/conversation_item.dart';
 
 class ChatsListPage extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() => new _ChatsListPageState();
 }
 
 class _ChatsListPageState extends State<ChatsListPage> {
-
   ConversationHandler conversationHandler = new ConversationHandler();
 
   Widget mainWidget = new CircularProgressIndicator();
@@ -31,12 +29,12 @@ class _ChatsListPageState extends State<ChatsListPage> {
       mainWidget = new ListView.builder(
           itemCount: conversationHandler.count,
           itemBuilder: (BuildContext context, int index) {
-            Conversation conversation = conversationHandler.conversations.elementAt(index);
-            if(index == conversationHandler.conversations.length - 1)
+            Conversation conversation =
+                conversationHandler.conversations.elementAt(index);
+            if (index == conversationHandler.conversations.length - 1)
               conversationHandler.getConversations(s, e);
             return new ConversationItem(conversation, conversationHandler);
-          }
-      );
+          });
     });
   }
 

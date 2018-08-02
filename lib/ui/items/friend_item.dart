@@ -40,7 +40,9 @@ class FriendItemState extends State<FriendItem> {
         ),
       trailing: new IconButton(
         icon: new Icon(Icons.chat),
-        onPressed: () {  },
+        onPressed: () {
+
+        },
       ),
     );
   }

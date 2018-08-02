@@ -1,16 +1,16 @@
 import 'package:vk_chat/models/conversation_info.dart';
-import 'package:vk_chat/models/conversation_last_message.dart';
+import 'package:vk_chat/models/message.dart';
 
 class Conversation {
 
   ConversationInfo conversationInfo;
-  ConversationLastMessage lastMessage;
+  Message lastMessage;
 
   Conversation(this.conversationInfo, this.lastMessage);
 
   static Conversation parse(Map<String, dynamic> map) {
     return new Conversation(ConversationInfo.parse(map['conversation']),
-        ConversationLastMessage.parse(map['last_message']));
+        Message.parse(map['last_message']));
   }
 
   static List<Conversation> parseList(List conversations) {

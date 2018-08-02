@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:vk_chat/models/chat.dart';
 import 'package:vk_chat/models/profile.dart';
 
 class VK {
@@ -14,17 +15,14 @@ class VK {
 
   static const platform = const MethodChannel('vk_plugin');
 
+  Profile currentUser;
+
   void login(void result(bool isLoggedIn)) async {
     try {
-      print('login');
       result(await platform.invokeMethod('login'));
     } on PlatformException catch (e) {
       result(false);
     }
-  }
-
-  void getAccountInfo() async {
-    String jsonStr = await platform.invokeMethod('account_info');
   }
 
   Future<List> getFriendIds() async {
@@ -57,7 +55,8 @@ class VK {
       String jsonStr = await platform
           .invokeMethod("users_info", {"fields": fields});
       Map<String, dynamic> map = json.decode(jsonStr);
-      return Profile.parseList(map['response'])[0];
+      currentUser = Profile.parseList(map['response'])[0];
+      return currentUser;
     } on PlatformException catch (e) {
       return null;
     }
@@ -67,8 +66,24 @@ class VK {
     List<String> fields = new List();
     fields.add("profile");
     fields.add("photo_100");
-    String jsonStr = await platform.invokeMethod(
-        "conversations", {"fields": fields, "extended": 1, "offset": offset});
+    String jsonStr = await platform.invokeMethod("conversations",
+        {"fields": fields, "extended": 1, "offset": offset});
     return json.decode(jsonStr)['response'];
+  }
+
+  Future<Map<String, dynamic>> getHistory(int lastLoadedMessageId, int peerId) async {
+    var params;
+    if(lastLoadedMessageId == 0)
+        params = {"peer_id": peerId, "count": 50};
+      else
+        params = {"peer_id": peerId, "start_message_id": lastLoadedMessageId};
+    String jsonStr = await platform.invokeMethod("messages_history", params);
+    return json.decode(jsonStr)['response'];
+  }
+
+  Future<Chat> getChat(int chatId) async {
+    var params = {"chat_id": chatId, "fields":"profile, photo_100"};
+    String jsonStr = await platform.invokeMethod("chat", params);
+    return Chat.parse(json.decode(jsonStr)['response']);
   }
 }

@@ -15,7 +15,7 @@ class ConversationHandler {
   VK vk;
 
   ConversationHandler() {
-    vk = new VK();
+    vk = VK.getInstance();
     conversations = new List();
     profiles = new Map();
     groups = new Map();

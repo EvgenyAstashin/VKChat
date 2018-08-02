@@ -2,7 +2,6 @@ package com.dev.astashin.vkchat
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import com.vk.sdk.VKAccessToken
 import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
@@ -12,7 +11,7 @@ import io.flutter.plugin.common.MethodChannel
 import com.vk.sdk.api.VKRequest.VKRequestListener
 
 
-class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler {
+class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCallHandler {
 
     companion object {
         const val CHANNEL = "vk_plugin"
@@ -26,6 +25,10 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
         const val GET_CONVERSATIONS = "conversations"
 
         const val GET_ACCOUNT_INFO = "account_info"
+
+        const val GET_MESSAGES_HISTORY = "messages_history"
+
+        const val GET_CHAT = "chat"
     }
 
     private var token: VKAccessToken? = null
@@ -46,6 +49,10 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
             getConversations(p0, p1)
         if (p0?.method == GET_ACCOUNT_INFO)
             getAccountInfo(p1)
+        if(p0?.method == GET_MESSAGES_HISTORY)
+            getMessages(p0, p1)
+        if(p0?.method == GET_CHAT)
+            getChat(p0, p1)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -123,9 +130,42 @@ class VKMethodsHandler(val activity: Activity) : MethodChannel.MethodCallHandler
         })
     }
 
+    private fun getMessages(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+        val request = VKApi.messages().getHistory(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
+        request.executeWithListener(object : VKRequestListener() {
+            override fun onComplete(response: VKResponse) {
+                methodResult?.success(response.responseString)
+            }
+
+            override fun onError(error: VKError) {
+                methodResult?.error("error", "error", null)
+            }
+
+            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
+                methodResult?.error("error", "error", null)
+            }
+        })
+    }
+
     private fun getAccountInfo(methodResult: MethodChannel.Result?) {
-        Log.e("getAccountInfo", "getAccountInfo")
         val request = VKApi.account().profileInfo;
+        request.executeWithListener(object : VKRequestListener() {
+            override fun onComplete(response: VKResponse) {
+                methodResult?.success(response.responseString)
+            }
+
+            override fun onError(error: VKError) {
+                methodResult?.error("error", "error", null)
+            }
+
+            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
+                methodResult?.error("error", "error", null)
+            }
+        })
+    }
+
+    private fun getChat(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+        val request = VKApi.messages().getChat(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
         request.executeWithListener(object : VKRequestListener() {
             override fun onComplete(response: VKResponse) {
                 methodResult?.success(response.responseString)

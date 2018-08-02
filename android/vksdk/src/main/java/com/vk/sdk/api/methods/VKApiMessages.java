@@ -48,6 +48,15 @@ public class VKApiMessages extends VKApiBase {
         });
     }
 
+    public VKRequest getChat(VKParameters params) {
+        return prepareRequest("getChat", params, new VKParser() {
+            @Override
+            public Object createModel(JSONObject object) {
+                return object.toString();
+            }
+        });
+    }
+
     /**
      * Returns messages current user
      *
@@ -89,6 +98,15 @@ public class VKApiMessages extends VKApiBase {
      */
     public VKRequest getDialogs(VKParameters params) {
         return prepareRequest("getDialogs", params, new VKParser() {
+            @Override
+            public Object createModel(JSONObject object) {
+                return new VKApiGetDialogResponse(object);
+            }
+        });
+    }
+
+    public VKRequest getHistory(VKParameters params) {
+        return prepareRequest("getHistory", params, new VKParser() {
             @Override
             public Object createModel(JSONObject object) {
                 return new VKApiGetDialogResponse(object);
