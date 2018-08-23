@@ -29,6 +29,8 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
         const val GET_MESSAGES_HISTORY = "messages_history"
 
         const val GET_CHAT = "chat"
+
+        const val SEND_MESSAGE = "send_message"
     }
 
     private var token: VKAccessToken? = null
@@ -53,6 +55,8 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
             getMessages(p0, p1)
         if(p0?.method == GET_CHAT)
             getChat(p0, p1)
+        if(p0?.method == SEND_MESSAGE)
+            sendMessage(p0, p1)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -166,6 +170,23 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
 
     private fun getChat(p0: MethodCall?, methodResult: MethodChannel.Result?) {
         val request = VKApi.messages().getChat(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
+        request.executeWithListener(object : VKRequestListener() {
+            override fun onComplete(response: VKResponse) {
+                methodResult?.success(response.responseString)
+            }
+
+            override fun onError(error: VKError) {
+                methodResult?.error("error", "error", null)
+            }
+
+            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
+                methodResult?.error("error", "error", null)
+            }
+        })
+    }
+
+    private fun sendMessage(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+        val request = VKApi.messages().send(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
         request.executeWithListener(object : VKRequestListener() {
             override fun onComplete(response: VKResponse) {
                 methodResult?.success(response.responseString)

@@ -1,21 +1,25 @@
 import 'package:vk_chat/models/conversation_info.dart';
 import 'package:vk_chat/models/message.dart';
 
-class Conversation {
+import 'package:json_annotation/json_annotation.dart';
 
+part 'conversation.g.dart';
+
+@JsonSerializable()
+class Conversation extends Object with _$ConversationSerializerMixin {
+
+  @JsonKey(name: 'conversation')
   ConversationInfo conversationInfo;
+  @JsonKey(name: 'last_message')
   Message lastMessage;
 
   Conversation(this.conversationInfo, this.lastMessage);
 
-  static Conversation parse(Map<String, dynamic> map) {
-    return new Conversation(ConversationInfo.parse(map['conversation']),
-        Message.parse(map['last_message']));
-  }
+  factory Conversation.fromJson(Map<String, dynamic> json) => _$ConversationFromJson(json);
 
   static List<Conversation> parseList(List conversations) {
     List<Conversation> parsedConversations = new List();
-    conversations.forEach((map) => parsedConversations.add(parse(map)));
+    conversations.forEach((map) => parsedConversations.add(Conversation.fromJson(map)));
     return parsedConversations;
   }
 }

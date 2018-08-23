@@ -1,10 +1,21 @@
-class Group {
+import 'package:json_annotation/json_annotation.dart';
 
+part 'group.g.dart';
+
+@JsonSerializable()
+class Group extends Object with _$GroupSerializerMixin {
+
+  @JsonKey(name: 'id')
   int id;
+  @JsonKey(name: 'name')
   String name;
+  @JsonKey(name: 'screen_name')
   String screenName;
+  @JsonKey(name: 'is_closed')
   int isClosed;
+  @JsonKey(name: 'type')
   String type;
+  @JsonKey(name: 'photo_100')
   String photo;
 
   Group(this.id,
@@ -14,22 +25,12 @@ class Group {
       this.type,
       this.photo);
 
-  static Group parse(Map<String, dynamic> map) {
-    Group user = new Group(
-        map['id'],
-        map['name'],
-        map['screen_name'],
-        map['is_closed'],
-        map['type'],
-        map['photo_100']
-    );
-    return user;
-  }
+  factory Group.fromJson(Map<String, dynamic> json) => _$GroupFromJson(json);
 
   static List<Group> parseList(List users) {
     List<Group> parsedUsers = new List();
     if(users != null)
-      users.forEach((map) => parsedUsers.add(parse(map)));
+      users.forEach((map) => parsedUsers.add(Group.fromJson(map)));
     return parsedUsers;
   }
 }

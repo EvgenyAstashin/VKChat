@@ -57,6 +57,15 @@ public class VKApiMessages extends VKApiBase {
         });
     }
 
+    public VKRequest send(VKParameters params) {
+        return prepareRequest("send", params, new VKParser() {
+            @Override
+            public Object createModel(JSONObject object) {
+                return object.toString();
+            }
+        });
+    }
+
     /**
      * Returns messages current user
      *

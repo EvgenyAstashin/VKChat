@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:vk_chat/models/chat.dart';
 import 'package:vk_chat/models/profile.dart';
+import 'package:vk_chat/models/send_message_response.dart';
 
 class VK {
   static VK _vk;
@@ -74,7 +75,7 @@ class VK {
   Future<Map<String, dynamic>> getHistory(int lastLoadedMessageId, int peerId) async {
     var params;
     if(lastLoadedMessageId == 0)
-        params = {"peer_id": peerId, "count": 50};
+        params = {"peer_id": peerId};
       else
         params = {"peer_id": peerId, "start_message_id": lastLoadedMessageId};
     String jsonStr = await platform.invokeMethod("messages_history", params);
@@ -84,6 +85,12 @@ class VK {
   Future<Chat> getChat(int chatId) async {
     var params = {"chat_id": chatId, "fields":"profile, photo_100"};
     String jsonStr = await platform.invokeMethod("chat", params);
-    return Chat.parse(json.decode(jsonStr)['response']);
+    return Chat.fromJson(json.decode(jsonStr)['response']);
+  }
+
+  Future<SendMessageResponse> sendMessage(int peerId, String message) async {
+    var params = {"peer_id": peerId, "message": message};
+    String jsonStr = await platform.invokeMethod("send_message", params);
+    return SendMessageResponse.fromJson(json.decode(jsonStr)['response']);
   }
 }

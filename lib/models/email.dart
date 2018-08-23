@@ -1,22 +1,23 @@
-class Email {
+import 'package:json_annotation/json_annotation.dart';
 
+part 'email.g.dart';
+
+@JsonSerializable()
+class Email extends Object with _$EmailSerializerMixin {
+
+  @JsonKey(name: 'id')
   int id;
+  @JsonKey(name: 'address')
   String address;
 
   Email(this.id, this.address);
 
-  static Email parse(Map<String, dynamic> map) {
-    Email user = new Email(
-        map['id'],
-        map['address']
-    );
-    return user;
-  }
+  factory Email.fromJson(Map<String, dynamic> json) => _$EmailFromJson(json);
 
   static List<Email> parseList(List emails) {
     List<Email> parsedUsers = new List();
     if(emails != null)
-      emails.forEach((map) => parsedUsers.add(parse(map)));
+      emails.forEach((map) => parsedUsers.add(Email.fromJson(map)));
     return parsedUsers;
   }
 }

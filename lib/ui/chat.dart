@@ -5,8 +5,9 @@ import 'package:vk_chat/models/conversation.dart';
 import 'package:vk_chat/models/email.dart';
 import 'package:vk_chat/models/chat.dart' as Model;
 import 'package:vk_chat/models/group.dart';
+import 'package:vk_chat/models/message.dart';
 import 'package:vk_chat/models/profile.dart';
-import 'package:vk_chat/ui/items/message_item.dart';
+import 'package:vk_chat/ui/items/message/message_item.dart';
 import 'package:vk_chat/vk/vk.dart';
 
 class ChatPage extends StatefulWidget {
@@ -24,45 +25,16 @@ class _ChatPageState extends State<ChatPage> {
   Conversation conversation;
   ConversationHandler conversationHandler;
   HistoryHandler historyHandler;
-  ScrollController _scrollController;
-  bool isPerformingRequest = false;
   Profile currentUser;
   Model.Chat chat;
   VK vk;
 
   Widget mainWidget;
 
-  _ChatPageState(this.conversation, this.conversationHandler);
+  final myController = TextEditingController();
+  ScrollController _scrollController = new ScrollController();
 
-  @override
-  void initState() {
-    vk = VK.getInstance();
-    currentUser = vk.currentUser;
-    mainWidget = Center(
-      child: CircularProgressIndicator(),
-    );
-    historyHandler = new HistoryHandler(conversation.conversationInfo.peer.id);
-    if (conversation.conversationInfo.peer.isChat()) {
-      vk.getChat(conversation.conversationInfo.peer.localId).then(
-          (Model.Chat chat) {
-        this.chat = chat;
-        historyHandler.getMessages(success, error);
-      }, onError: error);
-    } else {
-      historyHandler.getMessages(success, error);
-    }
-    _scrollController = new ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        if (!isPerformingRequest) {
-          setState(() => isPerformingRequest = true);
-          historyHandler.getMessages(s, e);
-        }
-      }
-    });
-    super.initState();
-  }
+  _ChatPageState(this.conversation, this.conversationHandler);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +50,14 @@ class _ChatPageState extends State<ChatPage> {
           children: <Widget>[
             Expanded(
                 child: Container(
-                    color: Color.fromARGB(255, 50, 50, 50), child: mainWidget)),
+                    color: Color.fromARGB(255, 50, 50, 50), child: ListView.builder(
+    itemCount: historyHandler.messages.length,
+      reverse: true,
+      itemBuilder: (BuildContext context, int index) {
+        return MessageItem(
+            historyHandler.messages.elementAt(index), currentUser, chat);
+      },
+      controller: _scrollController,))),
             Row(
               children: <Widget>[
                 Expanded(
@@ -88,6 +67,7 @@ class _ChatPageState extends State<ChatPage> {
                           decoration: InputDecoration(
                               border: UnderlineInputBorder(),
                               hintText: 'Сообщение'),
+                          controller: myController,
                         ))),
                 IconButton(icon: new Icon(Icons.send), onPressed: sendMessage),
               ],
@@ -96,32 +76,43 @@ class _ChatPageState extends State<ChatPage> {
         ));
   }
 
-  void success() {
-    setState(() {
-      mainWidget = new ListView.builder(
-          itemCount: historyHandler.messagesCount,
-          reverse: true,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == historyHandler.messages.length - 1)
-              historyHandler.getMessages(s, e);
-            return MessageItem(
-                historyHandler.messages.elementAt(index), currentUser, chat);
-          });
+  @override
+  void initState() {
+        vk = VK.getInstance();
+    currentUser = vk.currentUser;
+    mainWidget = Center(
+      child: CircularProgressIndicator(),
+    );
+    historyHandler = new HistoryHandler(conversation.conversationInfo.peer.id);
+    if (conversation.conversationInfo.peer.isChat()) {
+      vk.getChat(conversation.conversationInfo.peer.localId).then(
+          (Model.Chat chat) {
+        this.chat = chat;
+        historyHandler.getMessages(success, error);
+      }, onError: error);
+    } else {
+      historyHandler.getMessages(success, error);
+    }
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent)
+        historyHandler.getMessages(success, error);
     });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void success() {
+    setState((){});
   }
 
   void error() {
     print('error');
   }
-
-  void s() {
-    print('success');
-    setState(() {
-      isPerformingRequest = false;
-    });
-  }
-
-  void e() {}
 
   Widget _getTitleWithImage() {
     return Row(
@@ -177,5 +168,18 @@ class _ChatPageState extends State<ChatPage> {
     return new NetworkImage('');
   }
 
-  void sendMessage() {}
+  void sendMessage() {
+    String text = myController.text;
+    myController.clear();
+    Message message = Message.createMessage(
+        DateTime.now().millisecondsSinceEpoch,
+        currentUser.id,
+        conversation.conversationInfo.peer.id,
+        text);
+    setState(() {
+      historyHandler.sendMessage(message);
+      FocusScope.of(context).requestFocus(new FocusNode());
+    });
+    vk.sendMessage(conversation.conversationInfo.peer.id, text);
+  }
 }

@@ -85,7 +85,7 @@ class MessageItem extends StatelessWidget {
   }
 
   Widget buildChatMessage() {
-    Profile user = chat.users[message.fromId];
+    Profile user = chat.usersMap[message.fromId];
     return Container(
       margin: EdgeInsets.fromLTRB(5.0, 2.5, 100.0, 2.5),
       child: Row(

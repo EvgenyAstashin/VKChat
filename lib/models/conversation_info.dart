@@ -1,18 +1,25 @@
 import 'package:vk_chat/models/chat_settings.dart';
 import 'package:vk_chat/models/conversation_peer.dart';
 
-class ConversationInfo {
+import 'package:json_annotation/json_annotation.dart';
 
+part 'conversation_info.g.dart';
+
+@JsonSerializable()
+class ConversationInfo extends Object with _$ConversationInfoSerializerMixin {
+
+  @JsonKey(name: 'peer')
   Peer peer;
+  @JsonKey(name: 'in_read')
   int inRead;
+  @JsonKey(name: 'out_read')
   int outRead;
+  @JsonKey(name: 'last_message_id')
   int lastMessageId;
+  @JsonKey(name: 'chat_settings')
   ChatSettings chatSettings;
 
   ConversationInfo(this.peer, this.inRead, this.outRead, this.lastMessageId, this.chatSettings);
-  
-  static ConversationInfo parse(Map<String, dynamic> map) {
-    return new ConversationInfo(Peer.parse(map['peer']), map['in_read'],
-        map['out_read'], map['last_message_id'], ChatSettings.parse(map['chat_settings']));
-  }
+
+  factory ConversationInfo.fromJson(Map<String, dynamic> json) => _$ConversationInfoFromJson(json);
 }

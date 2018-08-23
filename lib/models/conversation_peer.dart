@@ -1,15 +1,20 @@
-class Peer {
+import 'package:json_annotation/json_annotation.dart';
 
+part 'conversation_peer.g.dart';
+
+@JsonSerializable()
+class Peer extends Object with _$PeerSerializerMixin {
+
+  @JsonKey(name: 'id')
   int id;
+  @JsonKey(name: 'type')
   String type;
+  @JsonKey(name: 'local_id')
   int localId;
-
 
   Peer(this.id, this.type, this.localId);
 
-  static Peer parse(Map<String, dynamic> map) {
-    return new Peer(map['id'], map['type'], map['local_id']);
-  }
+  factory Peer.fromJson(Map<String, dynamic> json) => _$PeerFromJson(json);
 
   bool isUser() {
     return type == "user";

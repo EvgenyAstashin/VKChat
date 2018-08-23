@@ -1,20 +1,25 @@
-class ChatSettings {
+import 'package:json_annotation/json_annotation.dart';
 
+part 'chat_settings.g.dart';
+
+@JsonSerializable()
+class ChatSettings extends Object with _$ChatSettingsSerializerMixin {
+
+  @JsonKey(name: 'title')
   String title;
+  @JsonKey(name: 'members_count')
   int membersCount;
+  @JsonKey(name: 'state')
   String state;
+  @JsonKey(name: 'photo')
   Map<String, dynamic> photo;
+  @JsonKey(name: 'active_ids')
   List<dynamic> activeIds;
 
   ChatSettings(this.title, this.membersCount, this.state, this.photo,
       this.activeIds);
 
-  static ChatSettings parse(Map<String, dynamic> map) {
-    if(map == null)
-      return null;
-    return new ChatSettings(map['title'], map['members_count'],
-        map['state'], map['photo'], map['active_ids']);
-  }
+  factory ChatSettings.fromJson(Map<String, dynamic> json) => _$ChatSettingsFromJson(json);
 
   String getPhoto() {
     if(photo != null) {

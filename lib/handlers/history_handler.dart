@@ -9,6 +9,7 @@ class HistoryHandler {
   int peerId;
 
   VK vk;
+  bool loading = false;
 
   HistoryHandler(int peerId) {
     this.peerId = peerId;
@@ -18,7 +19,20 @@ class HistoryHandler {
   }
 
   void getMessages(void success(), void error()) {
-    vk.getHistory(lastMessageId, peerId).then((Map<String, dynamic> map) {_parse(map); success();}, onError: error);
+    if(!loading) {
+      loading = true;
+      vk.getHistory(lastMessageId, peerId).then((Map<String, dynamic> map) {
+        _parse(map);
+        success();
+      }, onError: error).whenComplete((){
+        loading = false;
+      });
+    }
+  }
+
+  void sendMessage(Message message) {
+    messagesCount++;
+    messages.insert(0, message);
   }
 
   void _parse(Map<String, dynamic> map) {

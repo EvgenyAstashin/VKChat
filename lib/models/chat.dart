@@ -1,26 +1,30 @@
 import 'package:vk_chat/models/profile.dart';
 
-class Chat {
+import 'package:json_annotation/json_annotation.dart';
+
+part 'chat.g.dart';
+
+@JsonSerializable()
+class Chat extends Object with _$ChatSerializerMixin {
+
+  @JsonKey(name: 'type')
   String type;
+  @JsonKey(name: 'title')
   String title;
+  @JsonKey(name: 'admin_id')
   int adminId;
+  @JsonKey(name: 'members_count')
   int membersCount;
-  Map<int, Profile> users;
+  @JsonKey(name: 'users')
+  List<Profile> users;
+
+  @JsonKey(ignore: true)
+  Map<int, Profile> usersMap;
 
   Chat(this.type, this.title, this.adminId, this.membersCount, List<Profile> users) {
-    this.users = Map();
+    this.usersMap = Map();
     users.forEach((Profile profile) => this.users[profile.id] = profile);
   }
 
-
-  static Chat parse(Map<String, dynamic> map) {
-    Chat chat = new Chat(
-        map['type'],
-        map['title'],
-        map['admin_id'],
-        map['members_count'],
-        Profile.parseList(map['users'])
-    );
-    return chat;
-  }
+  factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
 }
