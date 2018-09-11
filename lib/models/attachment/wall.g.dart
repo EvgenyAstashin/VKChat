@@ -36,7 +36,10 @@ Wall _$WallFromJson(Map<String, dynamic> json) {
       json['view'] == null
           ? null
           : new Views.fromJson(json['view'] as Map<String, dynamic>),
-      json['access_key'] as String);
+      json['access_key'] as String,
+      json['from'] == null
+          ? null
+          : new From.fromJson(json['from'] as Map<String, dynamic>));
 }
 
 abstract class _$WallSerializerMixin {
@@ -54,6 +57,7 @@ abstract class _$WallSerializerMixin {
   Reposts get reposts;
   Views get view;
   String get accessKey;
+  From get from;
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
         'from_id': fromId,
@@ -68,6 +72,7 @@ abstract class _$WallSerializerMixin {
         'likes': likes,
         'reposts': reposts,
         'view': view,
-        'access_key': accessKey
+        'access_key': accessKey,
+        'from': from
       };
 }

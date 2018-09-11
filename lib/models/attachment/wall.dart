@@ -1,5 +1,6 @@
 import 'package:vk_chat/models/attachment/comments.dart';
 import 'package:vk_chat/models/attachment/attachment.dart';
+import 'package:vk_chat/models/attachment/from.dart';
 import 'package:vk_chat/models/attachment/likes.dart';
 import 'package:vk_chat/models/attachment/post_source.dart';
 import 'package:vk_chat/models/attachment/reposts.dart';
@@ -40,10 +41,13 @@ class Wall extends Object with _$WallSerializerMixin {
   Views view;
   @JsonKey(name: 'access_key')
   String accessKey;
+  @JsonKey(name: 'from')
+  From from;
+
 
   Wall(this.id, this.fromId, this.toId, this.date, this.postType, this.text,
       this.markedAsAds, this.attachments, this.postSource, this.comments,
-      this.likes, this.reposts, this.view, this.accessKey);
+      this.likes, this.reposts, this.view, this.accessKey, this.from);
 
   factory Wall.fromJson(Map<String, dynamic> json) => _$WallFromJson(json);
 }

@@ -21,9 +21,9 @@ class Chat extends Object with _$ChatSerializerMixin {
   @JsonKey(ignore: true)
   Map<int, Profile> usersMap;
 
-  Chat(this.type, this.title, this.adminId, this.membersCount, List<Profile> users) {
+  Chat(this.type, this.title, this.adminId, this.membersCount, this.users) {
     this.usersMap = Map();
-    users.forEach((Profile profile) => this.users[profile.id] = profile);
+    this.users.forEach((Profile profile) => this.usersMap[profile.id] = profile);
   }
 
   factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);

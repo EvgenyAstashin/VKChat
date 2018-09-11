@@ -37,7 +37,10 @@ class HistoryHandler {
 
   void _parse(Map<String, dynamic> map) {
     messagesCount = map['count'];
-    messages.addAll(Message.parseList(map['items']));
-    lastMessageId = messages[messages.length - 1].id;
+    List<Message> parsedMessages = Message.parseList(map['items']);
+    if(parsedMessages.length != 0 && lastMessageId != 0)
+      parsedMessages.removeAt(0);
+    messages.addAll(parsedMessages);
+    lastMessageId = messages.last.id;
   }
 }

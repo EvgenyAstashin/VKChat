@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:vk_chat/models/chat.dart';
 import 'package:vk_chat/models/message.dart';
 import 'package:vk_chat/models/profile.dart';
+import 'package:vk_chat/ui/items/message/attachments/attachments.dart';
 
 class MessageItem extends StatelessWidget {
   Message message;
@@ -32,16 +33,14 @@ class MessageItem extends StatelessWidget {
                       color: Color.fromARGB(255, 255, 255, 255),
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        message.text,
-                        style: TextStyle(fontSize: 16.0),
-                      ),
+                      _buildMessage(message),
+                      Attachments(message.attachments),
                       Text(_getDate(),
                           style: TextStyle(
                               fontSize: 12.0,
-                              color: Color.fromARGB(255, 100, 100, 100)))
+                              color: Color.fromARGB(255, 100, 100, 100))),
                     ],
                   )))
         ],
@@ -69,10 +68,8 @@ class MessageItem extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        message.text,
-                        style: TextStyle(fontSize: 16.0),
-                      ),
+                      _buildMessage(message),
+                      Attachments(message.attachments),
                       Text(_getDate(),
                           style: TextStyle(
                               fontSize: 12.0,
@@ -119,12 +116,8 @@ class MessageItem extends StatelessWidget {
                               )
                         ],
                       ),
-                      Container(
-                          margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                          child: Text(
-                            message.text,
-                            style: TextStyle(fontSize: 16.0),
-                          )),
+                      _buildChatMessage(message),
+                      Attachments(message.attachments),
                       Text(_getDate(),
                           style: TextStyle(
                               fontSize: 12.0,
@@ -142,12 +135,38 @@ class MessageItem extends StatelessWidget {
     DateTime now = DateTime.now();
     if (messageDate.year == now.year) {
       if (messageDate.month == now.month && messageDate.day == now.day) {
-        return new DateFormat.Hm().format(messageDate);
+        return new DateFormat("HH:mm").format(messageDate);
       } else {
-        return new DateFormat("H:m MMM d").format(messageDate);
+        return new DateFormat("HH:mm MMM d").format(messageDate);
       }
     } else {
       return new DateFormat.y().format(messageDate);
     }
+  }
+
+  Widget _buildMessage(Message message) {
+    if(message.text != null && message.text.length != 0)
+      return Text(
+        message.text,
+        style: TextStyle(fontSize: 16.0),
+      );
+    else
+      return _emptyView();
+  }
+
+  Widget _buildChatMessage(Message message) {
+    if(message.text != null && message.text.length != 0)
+      return Container(
+          margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
+          child: Text(
+            message.text,
+            style: TextStyle(fontSize: 16.0),
+          ));
+    else
+      return _emptyView();
+  }
+
+  Widget _emptyView() {
+    return Container(width: 0.0, height: 0.0);
   }
 }

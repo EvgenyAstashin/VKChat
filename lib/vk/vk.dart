@@ -73,11 +73,11 @@ class VK {
   }
 
   Future<Map<String, dynamic>> getHistory(int lastLoadedMessageId, int peerId) async {
-    var params;
-    if(lastLoadedMessageId == 0)
-        params = {"peer_id": peerId};
-      else
-        params = {"peer_id": peerId, "start_message_id": lastLoadedMessageId};
+    var params = {};
+    params["fields"] = "description";
+    params["peer_id"] = peerId;
+    if(lastLoadedMessageId != 0)
+        params["start_message_id"] = lastLoadedMessageId;
     String jsonStr = await platform.invokeMethod("messages_history", params);
     return json.decode(jsonStr)['response'];
   }
@@ -85,7 +85,8 @@ class VK {
   Future<Chat> getChat(int chatId) async {
     var params = {"chat_id": chatId, "fields":"profile, photo_100"};
     String jsonStr = await platform.invokeMethod("chat", params);
-    return Chat.fromJson(json.decode(jsonStr)['response']);
+    Chat chat = Chat.fromJson(json.decode(jsonStr)['response']);
+    return chat;
   }
 
   Future<SendMessageResponse> sendMessage(int peerId, String message) async {

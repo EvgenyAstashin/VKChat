@@ -3,7 +3,7 @@ import 'package:vk_chat/handlers/conversation_handler.dart';
 import 'package:vk_chat/handlers/history_handler.dart';
 import 'package:vk_chat/models/conversation.dart';
 import 'package:vk_chat/models/email.dart';
-import 'package:vk_chat/models/chat.dart' as Model;
+import 'package:vk_chat/models/chat.dart';
 import 'package:vk_chat/models/group.dart';
 import 'package:vk_chat/models/message.dart';
 import 'package:vk_chat/models/profile.dart';
@@ -26,7 +26,7 @@ class _ChatPageState extends State<ChatPage> {
   ConversationHandler conversationHandler;
   HistoryHandler historyHandler;
   Profile currentUser;
-  Model.Chat chat;
+  Chat chat;
   VK vk;
 
   Widget mainWidget;
@@ -86,7 +86,7 @@ class _ChatPageState extends State<ChatPage> {
     historyHandler = new HistoryHandler(conversation.conversationInfo.peer.id);
     if (conversation.conversationInfo.peer.isChat()) {
       vk.getChat(conversation.conversationInfo.peer.localId).then(
-          (Model.Chat chat) {
+          (Chat chat) {
         this.chat = chat;
         historyHandler.getMessages(success, error);
       }, onError: error);
