@@ -28,6 +28,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 
 import com.vk.sdk.VKAccessToken;
@@ -206,6 +207,7 @@ public class VKHttpClient {
                 this.entity.writeTo(os);
             } else {
                 String query = getQuery();
+                Log.e("vk_firebase", "query " + query);
                 if (query != null && query.length() > 0) {
                     BufferedWriter writer = new BufferedWriter(
                             new OutputStreamWriter(os, sDefaultStringEncoding));
@@ -313,6 +315,7 @@ public class VKHttpClient {
                 this.connection.addRequestProperty(contentType.first, contentType.second);
             }
 
+            Log.e("vk_firebase", "request " + connection.toString());
             OutputStream os = this.connection.getOutputStream();
             this.writeParams(os);
             os.close();

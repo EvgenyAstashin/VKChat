@@ -2,6 +2,8 @@ package com.dev.astashin.vkchat
 
 import android.app.Activity
 import android.content.Intent
+import android.provider.Settings
+import android.util.Log
 import com.vk.sdk.VKAccessToken
 import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
@@ -31,6 +33,8 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
         const val GET_CHAT = "chat"
 
         const val SEND_MESSAGE = "send_message"
+
+        const val REGISTER_PUSH = "push_registration"
     }
 
     private var token: VKAccessToken? = null
@@ -65,6 +69,47 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
                 override fun onResult(res: VKAccessToken?) {
                     token = res
                     methodResult?.success(true)
+                    var app = activity.application as App
+
+                    val tok = app.token
+                    val params = VKParameters()
+                    params.set("token", tok)
+                    params.set("settings", "{\"msg\":\"on\", \"chat\":\"on\"}")
+                    var id = Settings.Secure.getString(activity.getContentResolver(),
+                            Settings.Secure.ANDROID_ID)
+                            Log.e("vk_firebase",id);
+                    params.set("device_id", id)
+                    VKApi.account().registerDevice(params).executeWithListener(object : VKRequest.VKRequestListener() {
+                        override fun onComplete(response: VKResponse) {
+                            Log.e("vk_firebase", "onComplete: " + response.json.toString())
+
+                            val params = VKParameters()
+                            params.set("device_id", id)
+
+                            VKApi.account().getPushSettings(params).executeWithListener(object : VKRequest.VKRequestListener() {
+                                override fun onComplete(response: VKResponse) {
+                                    Log.e("vk_firebase", "onComplete1: " + response.json.toString())
+                                }
+
+                                override fun onError(error: VKError) {
+                                    Log.e("vk_firebase", "onError1: " + error.toString())
+                                }
+
+                                override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
+                                    Log.e("vk_firebase", "attemptFailed1")
+                                }
+                            })
+
+                        }
+
+                        override fun onError(error: VKError) {
+                            Log.e("vk_firebase", "onError: " + error.toString())
+                        }
+
+                        override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
+                            Log.e("vk_firebase", "attemptFailed")
+                        }
+                    })
                 }
 
                 override fun onError(error: VKError?) {

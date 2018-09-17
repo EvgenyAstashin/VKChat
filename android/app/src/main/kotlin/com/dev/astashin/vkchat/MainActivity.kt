@@ -2,6 +2,8 @@ package com.dev.astashin.vkchat
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
@@ -16,6 +18,9 @@ class MainActivity: FlutterActivity() {
     GeneratedPluginRegistrant.registerWith(this)
 
     MethodChannel(flutterView, VKMethodsHandler.CHANNEL).setMethodCallHandler(vkMethodsHandler)
+
+//    Log.e("vk_firebase",Settings.Secure.getString(getContentResolver(),
+//            Settings.Secure.ANDROID_ID));
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

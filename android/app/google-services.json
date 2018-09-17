@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "399404564724",
+    "firebase_url": "https://vk-chat-a49e4.firebaseio.com",
+    "project_id": "vk-chat-a49e4",
+    "storage_bucket": "vk-chat-a49e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399404564724:android:2d9a062faf0f360d",
+        "android_client_info": {
+          "package_name": "com.dev.astashin.vkchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "399404564724-g6p7fd25etie2m9p0p0jbmouv0acc9dk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dev.astashin.vkchat",
+            "certificate_hash": "7e6c617c6bedfe579ff9f2763118073ddc9791a2"
+          }
+        },
+        {
+          "client_id": "399404564724-3es1ujpt4cidjpdek5dviupiuqjq842o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaYcbRbtjQjhS8JYt7tDkA3s7Bg6m9ZLI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "399404564724-3es1ujpt4cidjpdek5dviupiuqjq842o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
