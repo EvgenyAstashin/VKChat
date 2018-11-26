@@ -1,5 +1,6 @@
 package com.dev.astashin.vkchat
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.provider.Settings
@@ -35,6 +36,16 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
         const val SEND_MESSAGE = "send_message"
 
         const val REGISTER_PUSH = "push_registration"
+
+        const val MARK_AS_READ = "mark_as_read"
+
+        const val SET_ONLINE = "set_online"
+
+        const val SET_OFFLINE = "set_offline"
+
+        const val GET_LONG_POLL_SERVER = "get_long_poll_server"
+
+        const val GET_MESSAGES = "get_messages";
     }
 
     private var token: VKAccessToken? = null
@@ -56,11 +67,24 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
         if (p0?.method == GET_ACCOUNT_INFO)
             getAccountInfo(p1)
         if(p0?.method == GET_MESSAGES_HISTORY)
-            getMessages(p0, p1)
+            getMessagesHistory(p0, p1)
         if(p0?.method == GET_CHAT)
             getChat(p0, p1)
         if(p0?.method == SEND_MESSAGE)
             sendMessage(p0, p1)
+        if(p0?.method == MARK_AS_READ)
+            markAsRead(p0, p1)
+        if(p0?.method == SET_ONLINE)
+            setOnline(p0, p1)
+        if(p0?.method == SET_OFFLINE)
+            setOffline(p0, p1)
+        if(p0?.method == REGISTER_PUSH)
+            registerPush(p0, p1)
+        if(p0?.method == GET_LONG_POLL_SERVER)
+            getLogPollServer(p0, p1)
+        if(p0?.method == GET_MESSAGES)
+            getMessages(p0, p1)
+
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -69,47 +93,6 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
                 override fun onResult(res: VKAccessToken?) {
                     token = res
                     methodResult?.success(true)
-                    var app = activity.application as App
-
-                    val tok = app.token
-                    val params = VKParameters()
-                    params.set("token", tok)
-                    params.set("settings", "{\"msg\":\"on\", \"chat\":\"on\"}")
-                    var id = Settings.Secure.getString(activity.getContentResolver(),
-                            Settings.Secure.ANDROID_ID)
-                            Log.e("vk_firebase",id);
-                    params.set("device_id", id)
-                    VKApi.account().registerDevice(params).executeWithListener(object : VKRequest.VKRequestListener() {
-                        override fun onComplete(response: VKResponse) {
-                            Log.e("vk_firebase", "onComplete: " + response.json.toString())
-
-                            val params = VKParameters()
-                            params.set("device_id", id)
-
-                            VKApi.account().getPushSettings(params).executeWithListener(object : VKRequest.VKRequestListener() {
-                                override fun onComplete(response: VKResponse) {
-                                    Log.e("vk_firebase", "onComplete1: " + response.json.toString())
-                                }
-
-                                override fun onError(error: VKError) {
-                                    Log.e("vk_firebase", "onError1: " + error.toString())
-                                }
-
-                                override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
-                                    Log.e("vk_firebase", "attemptFailed1")
-                                }
-                            })
-
-                        }
-
-                        override fun onError(error: VKError) {
-                            Log.e("vk_firebase", "onError: " + error.toString())
-                        }
-
-                        override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
-                            Log.e("vk_firebase", "attemptFailed")
-                        }
-                    })
                 }
 
                 override fun onError(error: VKError?) {
@@ -122,7 +105,7 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
         if(VKSdk.isLoggedIn()) {
             methodResult?.success(true)
         } else {
-            VKSdk.login(activity, "messages")
+            VKSdk.login(activity, "messages,offline")
         }
     }
 
@@ -130,111 +113,81 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
         val params = HashMap<String, Any>()
         params["order"] = "hints"
         val request = VKApi.friends().get(VKParameters(params))
-        request.executeWithListener(object : VKRequestListener() {
-            override fun onComplete(response: VKResponse) {
-                methodResult?.success(response.responseString)
-            }
-
-            override fun onError(error: VKError) {
-                methodResult?.error("error", "error", null)
-            }
-
-            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
-                methodResult?.error("error", "error", null)
-            }
-        })
+        invokeRequest(request, methodResult)
     }
 
     private fun getUsersInfo(p0: MethodCall?, methodResult: MethodChannel.Result?) {
         val request = VKApi.users().get(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
-        request.executeWithListener(object : VKRequestListener() {
-            override fun onComplete(response: VKResponse) {
-                methodResult?.success(response.responseString)
-            }
-
-            override fun onError(error: VKError) {
-                methodResult?.error("error", "error", null)
-            }
-
-            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
-                methodResult?.error("error", "error", null)
-            }
-        })
+        invokeRequest(request, methodResult)
     }
 
     private fun getConversations(p0: MethodCall?, methodResult: MethodChannel.Result?) {
         val request = VKApi.messages().getConversations(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
-        request.executeWithListener(object : VKRequestListener() {
-            override fun onComplete(response: VKResponse) {
-                methodResult?.success(response.responseString)
-            }
-
-            override fun onError(error: VKError) {
-                methodResult?.error("error", "error", null)
-            }
-
-            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
-                methodResult?.error("error", "error", null)
-            }
-        })
+        invokeRequest(request, methodResult)
     }
 
-    private fun getMessages(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+    private fun getMessagesHistory(p0: MethodCall?, methodResult: MethodChannel.Result?) {
         val request = VKApi.messages().getHistory(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
-        request.executeWithListener(object : VKRequestListener() {
-            override fun onComplete(response: VKResponse) {
-                methodResult?.success(response.responseString)
-            }
-
-            override fun onError(error: VKError) {
-                methodResult?.error("error", "error", null)
-            }
-
-            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
-                methodResult?.error("error", "error", null)
-            }
-        })
+        invokeRequest(request, methodResult)
     }
 
     private fun getAccountInfo(methodResult: MethodChannel.Result?) {
         val request = VKApi.account().profileInfo;
-        request.executeWithListener(object : VKRequestListener() {
-            override fun onComplete(response: VKResponse) {
-                methodResult?.success(response.responseString)
-            }
-
-            override fun onError(error: VKError) {
-                methodResult?.error("error", "error", null)
-            }
-
-            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
-                methodResult?.error("error", "error", null)
-            }
-        })
+        invokeRequest(request, methodResult)
     }
 
     private fun getChat(p0: MethodCall?, methodResult: MethodChannel.Result?) {
         val request = VKApi.messages().getChat(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
-        request.executeWithListener(object : VKRequestListener() {
-            override fun onComplete(response: VKResponse) {
-                methodResult?.success(response.responseString)
-            }
-
-            override fun onError(error: VKError) {
-                methodResult?.error("error", "error", null)
-            }
-
-            override fun attemptFailed(request: VKRequest, attemptNumber: Int, totalAttempts: Int) {
-                methodResult?.error("error", "error", null)
-            }
-        })
+        invokeRequest(request, methodResult)
     }
 
     private fun sendMessage(p0: MethodCall?, methodResult: MethodChannel.Result?) {
         val request = VKApi.messages().send(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
+        invokeRequest(request, methodResult)
+    }
+
+    private fun markAsRead(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+        val request = VKApi.messages().markAsRead(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
+        invokeRequest(request, methodResult)
+    }
+
+    private fun setOnline(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+        val request = VKApi.account().setOnline()
+        invokeRequest(request, methodResult)
+    }
+
+    private fun setOffline(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+        val request = VKApi.account().setOffline()
+        invokeRequest(request, methodResult)
+    }
+
+    @SuppressLint("HardwareIds")
+    private fun registerPush(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+        val params = VKParameters()
+            params.set("token", p0?.argument("token"))
+            params.set("settings", "{\"msg\":\"on\", \"chat\":[\"no_sound\",\"no_text\"], \"friend\":\"on\", \"reply\":\"on\", \"mention\":\"fr_of_fr\"}")
+            params.set("device_model", "android")
+            params.set("system_version", android.os.Build.VERSION.SDK_INT)
+            params.set("device_id", Settings.Secure.getString(activity.contentResolver,
+                    Settings.Secure.ANDROID_ID))
+        val request = VKApi.account().registerDevice(params)
+        invokeRequest(request, methodResult)
+    }
+
+    private fun getMessages(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+        val request = VKApi.messages().getById(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
+        invokeRequest(request, methodResult)
+    }
+
+    private fun getLogPollServer(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+        invokeRequest(VKApi.messages().longPollServer, methodResult)
+    }
+
+    private fun invokeRequest(request: VKRequest, methodResult: MethodChannel.Result?) {
         request.executeWithListener(object : VKRequestListener() {
             override fun onComplete(response: VKResponse) {
                 methodResult?.success(response.responseString)
+                Log.e("vk_firebase", "onComplete: " + response.json.toString())
             }
 
             override fun onError(error: VKError) {

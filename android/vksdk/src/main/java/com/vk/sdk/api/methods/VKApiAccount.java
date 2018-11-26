@@ -12,6 +12,14 @@ import org.json.JSONObject;
 
 public class VKApiAccount extends VKApiBase {
 
+    public VKRequest setOnline() {
+        return prepareRequest("setOnline", null);
+    }
+
+    public VKRequest setOffline() {
+        return prepareRequest("setOffline", null);
+    }
+
     public VKRequest getProfileInfo() {
         return prepareRequest("getProfileInfo", null, new VKParser() {
             @Override

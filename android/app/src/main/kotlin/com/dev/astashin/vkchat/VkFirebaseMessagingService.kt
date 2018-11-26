@@ -8,6 +8,11 @@ import com.google.firebase.messaging.RemoteMessage
 
 class VkFirebaseMessagingService : FirebaseMessagingService() {
 
+    override fun onCreate() {
+        super.onCreate()
+        Log.e("vk_firebase", "VkFirebaseMessagingService onCreate")
+    }
+
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         // ...
 

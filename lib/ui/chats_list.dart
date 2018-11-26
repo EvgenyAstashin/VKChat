@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vk_chat/handlers/conversation_handler.dart';
 import 'package:vk_chat/models/conversation.dart';
+import 'package:vk_chat/models/message.dart';
 import 'package:vk_chat/ui/items/conversation_item.dart';
+import 'package:vk_chat/vk/vk.dart';
 
 class ChatsListPage extends StatefulWidget {
   @override
@@ -9,13 +11,14 @@ class ChatsListPage extends StatefulWidget {
 }
 
 class _ChatsListPageState extends State<ChatsListPage> {
-  ConversationHandler conversationHandler = new ConversationHandler();
 
   Widget mainWidget = new CircularProgressIndicator();
+  VK vk = VK();
 
   @override
   void initState() {
-    conversationHandler.getConversations(success, error);
+    vk.getConversationHandler().getConversations(success, error);
+    registerEventListener();
     super.initState();
   }
 
@@ -26,14 +29,17 @@ class _ChatsListPageState extends State<ChatsListPage> {
 
   void success() {
     setState(() {
+      ConversationHandler handler = vk.getConversationHandler();
+      List<Conversation> conversations = handler.getConversationsList();
       mainWidget = new ListView.builder(
-          itemCount: conversationHandler.count,
+          itemCount: handler.count,
           itemBuilder: (BuildContext context, int index) {
+
             Conversation conversation =
-                conversationHandler.conversations.elementAt(index);
-            if (index == conversationHandler.conversations.length - 1)
-              conversationHandler.getConversations(s, e);
-            return new ConversationItem(conversation, conversationHandler);
+            conversations.elementAt(index);
+            if (index == conversations.length - 1)
+              handler.getConversations(s, e);
+            return new ConversationItem(conversation);
           });
     });
   }
@@ -45,4 +51,10 @@ class _ChatsListPageState extends State<ChatsListPage> {
   void s() {}
 
   void e() {}
+
+  void registerEventListener() {
+    vk.getBus().on<Message>().listen((message) {
+      success();
+    });
+  }
 }

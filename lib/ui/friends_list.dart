@@ -9,7 +9,7 @@ class FriendsListPage extends StatefulWidget {
 }
 
 class _FriendsListPageState extends State<FriendsListPage> {
-  VK vk = VK.getInstance();
+  VK vk = VK();
   List friendIds = new List();
   List<Profile> friendsInfo = new List();
   int friends = 0;
@@ -18,21 +18,13 @@ class _FriendsListPageState extends State<FriendsListPage> {
 
   @override
   void initState() {
-    vk.getFriendIds().then((List friendIds) => loadFriendsInfo(friendIds));
+    vk.loadFriendsInfo(showFriends);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Center(child: mainWidget);
-  }
-
-  void loadFriendsInfo(List friendIds) {
-    friendIds.add(0);
-    friendIds.insert(0, 0);
-    this.friendIds.addAll(friendIds);
-    friends = friendIds.length;
-    vk.getUsersInfo(friendIds).then((List<Profile> friendsInfo) => showFriends(friendsInfo));
   }
 
   void showFriends(List<Profile> friendsInfo) {

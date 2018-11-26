@@ -1,5 +1,5 @@
 import 'package:vk_chat/models/message.dart';
-import 'package:vk_chat/vk/vk.dart';
+import 'package:vk_chat/vk/vk_api.dart';
 
 class HistoryHandler {
 
@@ -8,20 +8,19 @@ class HistoryHandler {
   int lastMessageId;
   int peerId;
 
-  VK vk;
+  VkApi _api;
   bool loading = false;
 
-  HistoryHandler(int peerId) {
+  HistoryHandler(this._api, int peerId) {
     this.peerId = peerId;
     messages = List();
     lastMessageId = 0;
-    vk = VK.getInstance();
   }
 
   void getMessages(void success(), void error()) {
     if(!loading) {
       loading = true;
-      vk.getHistory(lastMessageId, peerId).then((Map<String, dynamic> map) {
+      _api.getHistory(lastMessageId, peerId).then((Map<String, dynamic> map) {
         _parse(map);
         success();
       }, onError: error).whenComplete((){
@@ -30,7 +29,7 @@ class HistoryHandler {
     }
   }
 
-  void sendMessage(Message message) {
+  void setMessage(Message message) {
     messagesCount++;
     messages.insert(0, message);
   }

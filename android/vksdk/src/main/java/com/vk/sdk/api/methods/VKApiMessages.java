@@ -35,8 +35,13 @@ import org.json.JSONObject;
  */
 public class VKApiMessages extends VKApiBase {
 
-    public VKRequest getConversations() {
-        return getConversations(VKParameters.from(VKApiConst.COUNT, "10"));
+    public VKRequest markAsRead(VKParameters params) {
+        return prepareRequest("markAsRead", params, new VKParser() {
+            @Override
+            public Object createModel(JSONObject object) {
+                return object.toString();
+            }
+        });
     }
 
     public VKRequest getConversations(VKParameters params) {
@@ -66,6 +71,15 @@ public class VKApiMessages extends VKApiBase {
         });
     }
 
+    public VKRequest getLongPollServer() {
+        return prepareRequest("getLongPollServer", new VKParameters(), new VKParser() {
+            @Override
+            public Object createModel(JSONObject object) {
+                return object.toString();
+            }
+        });
+    }
+
     /**
      * Returns messages current user
      *
@@ -83,6 +97,15 @@ public class VKApiMessages extends VKApiBase {
      */
     public VKRequest get(VKParameters params) {
         return prepareRequest("get", params, new VKParser() {
+            @Override
+            public Object createModel(JSONObject object) {
+                return new VKApiGetMessagesResponse(object);
+            }
+        });
+    }
+
+    public VKRequest getById(VKParameters params) {
+        return prepareRequest("getById", params, new VKParser() {
             @Override
             public Object createModel(JSONObject object) {
                 return new VKApiGetMessagesResponse(object);

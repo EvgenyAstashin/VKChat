@@ -6,27 +6,26 @@ import 'package:vk_chat/models/group.dart';
 import 'package:vk_chat/models/profile.dart';
 import 'package:intl/intl.dart';
 import 'package:vk_chat/ui/chat.dart';
+import 'package:vk_chat/vk/vk.dart';
 
 class ConversationItem extends StatefulWidget {
   Conversation conversation;
-  ConversationHandler handler;
 
-  ConversationItem(Conversation conversation, ConversationHandler handler)
+  ConversationItem(Conversation conversation)
       : conversation = conversation,
-        handler = handler,
         super(key: new ObjectKey(conversation));
 
   @override
   State<StatefulWidget> createState() {
-    return new ConversationItemState(conversation, handler);
+    return new ConversationItemState(conversation);
   }
 }
 
 class ConversationItemState extends State<ConversationItem> {
   Conversation conversation;
-  ConversationHandler handler;
+  ConversationHandler handler = VK().getConversationHandler();
 
-  ConversationItemState(this.conversation, this.handler);
+  ConversationItemState(this.conversation);
 
   @override
   Widget build(BuildContext context) {

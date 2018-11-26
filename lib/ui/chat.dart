@@ -7,12 +7,14 @@ import 'package:vk_chat/models/chat.dart';
 import 'package:vk_chat/models/group.dart';
 import 'package:vk_chat/models/message.dart';
 import 'package:vk_chat/models/profile.dart';
+import 'package:vk_chat/preferences.dart';
 import 'package:vk_chat/ui/items/message/message_item.dart';
 import 'package:vk_chat/vk/vk.dart';
 
 class ChatPage extends StatefulWidget {
-  Conversation _conversation;
-  ConversationHandler _handler;
+
+  final Conversation _conversation;
+  final ConversationHandler _handler;
 
   ChatPage(this._conversation, this._handler);
 
@@ -28,6 +30,7 @@ class _ChatPageState extends State<ChatPage> {
   Profile currentUser;
   Chat chat;
   VK vk;
+  bool markAsRead;
 
   Widget mainWidget;
 
@@ -78,25 +81,24 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-        vk = VK.getInstance();
+        vk = VK();
+        markAsRead = Preferences().settings.markAsRead;
     currentUser = vk.currentUser;
     mainWidget = Center(
       child: CircularProgressIndicator(),
     );
-    historyHandler = new HistoryHandler(conversation.conversationInfo.peer.id);
-    if (conversation.conversationInfo.peer.isChat()) {
-      vk.getChat(conversation.conversationInfo.peer.localId).then(
-          (Chat chat) {
-        this.chat = chat;
-        historyHandler.getMessages(success, error);
-      }, onError: error);
-    } else {
-      historyHandler.getMessages(success, error);
-    }
+
+    vk.getHistoryHandler(conversation, (historyHandler, chat) {
+      this.historyHandler = historyHandler;
+      this.chat = chat;
+      this.historyHandler.getMessages(success, error);
+    }, error);
+
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent)
         historyHandler.getMessages(success, error);
     });
+    registerEventListener();
     super.initState();
   }
 
@@ -107,6 +109,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void success() {
+    if(markAsRead)
+      vk.markAsRead(conversation.conversationInfo.peer.id);
     setState((){});
   }
 
@@ -125,7 +129,7 @@ class _ChatPageState extends State<ChatPage> {
                 shape: BoxShape.circle,
                 image: new DecorationImage(
                     fit: BoxFit.fill, image: _getAvatarWidget()))),
-        Text(_getTitle())
+        Expanded(child:  Text(_getTitle(), overflow: TextOverflow.ellipsis))
       ],
     );
   }
@@ -172,14 +176,25 @@ class _ChatPageState extends State<ChatPage> {
     String text = myController.text;
     myController.clear();
     Message message = Message.createMessage(
-        DateTime.now().millisecondsSinceEpoch,
+        DateTime.now().millisecondsSinceEpoch~/1000,
         currentUser.id,
         conversation.conversationInfo.peer.id,
         text);
-    setState(() {
-      historyHandler.sendMessage(message);
-      FocusScope.of(context).requestFocus(new FocusNode());
-    });
-    vk.sendMessage(conversation.conversationInfo.peer.id, text);
+    setMessage(message, true);
+    vk.sendMessage(message);
+  }
+
+  void registerEventListener() {
+    vk.getBus().on<Message>().listen((message) {setMessage(message, false);});
+  }
+
+  void setMessage(Message message, bool outgoing) {
+    if(message.peerId == conversation.conversationInfo.peer.id &&
+        (message.fromId != currentUser.id || outgoing)) {
+      setState(() {
+        historyHandler.setMessage(message);
+        FocusScope.of(context).requestFocus(new FocusNode());
+      });
+    }
   }
 }

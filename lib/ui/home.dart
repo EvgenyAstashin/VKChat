@@ -4,19 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:vk_chat/models/profile.dart';
 import 'package:vk_chat/ui/chats_list.dart';
 import 'package:vk_chat/ui/friends_list.dart';
+import 'package:vk_chat/ui/settings.dart';
 import 'package:vk_chat/vk/vk.dart';
 
 class HomePage extends StatefulWidget {
-  String title = "Сообщения";
 
   @override
   _HomePageState createState() => new _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  String title = "Сообщения";
   Widget currentPage;
   Widget drawerHeader;
-  VK vk = VK.getInstance();
+  VK vk = VK();
 
   @override
   void initState() {
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage> {
     return new Scaffold(
       drawer: _buildDrawer(),
       appBar: new AppBar(
-        title: new Text(widget.title),
+        title: new Text(title),
         elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
       ),
       body: currentPage,
@@ -54,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadLoggedUserInfo() {
-    vk.getLoggedUserInfo().then((Profile profile) => showProfile(profile));
+    vk.getLoggedUserInfo(showProfile);
   }
 
   void showProfile(Profile profile) {
@@ -103,7 +104,7 @@ class _HomePageState extends State<HomePage> {
 
   void _onMessagesTap() {
     setState(() {
-      widget.title = "Сообщения";
+      title = "Сообщения";
       currentPage = new ChatsListPage();
       Navigator.pop(context, true);
     });
@@ -111,13 +112,19 @@ class _HomePageState extends State<HomePage> {
 
   void _onFriendsTap() {
     setState(() {
-      widget.title = "Друзья";
+      title = "Друзья";
       currentPage = new FriendsListPage();
       Navigator.pop(context, true);
     });
   }
 
-  void _onSettingsTap() {}
+  void _onSettingsTap() {
+    setState(() {
+      title = "Настройки";
+      currentPage = new SettingsPage();
+      Navigator.pop(context, true);
+    });
+  }
 
   void _onLogoutTap() {}
 }

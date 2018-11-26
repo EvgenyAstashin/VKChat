@@ -1,97 +1,133 @@
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
+import 'package:event_bus/event_bus.dart';
+import 'package:vk_chat/handlers/history_handler.dart';
 import 'package:vk_chat/models/chat.dart';
+import 'package:vk_chat/models/conversation.dart';
+import 'package:vk_chat/models/message.dart';
 import 'package:vk_chat/models/profile.dart';
-import 'package:vk_chat/models/send_message_response.dart';
+import 'package:vk_chat/vk/events.dart';
+import 'package:vk_chat/vk/log_poll_worker.dart';
+import 'package:vk_chat/vk/vk_api.dart';
+import 'package:vk_chat/handlers/conversation_handler.dart';
 
 class VK {
-  static VK _vk;
+  static final VK _vk = VK._internal();
 
-  static VK getInstance() {
-    if (_vk == null) _vk = new VK();
+  factory VK() {
     return _vk;
   }
 
-  static const platform = const MethodChannel('vk_plugin');
+  VK._internal() {
+    _init();
+  }
+
+  VkApi _api = VkApi();
+  EventBus _eventBus = new EventBus();
+
+  ConversationHandler _conversationHandler;
+  LongPollWorker _longPollWorker;
 
   Profile currentUser;
+  String token;
+
+  EventBus getBus() {
+    return _eventBus;
+  }
 
   void login(void result(bool isLoggedIn)) async {
-    try {
-      result(await platform.invokeMethod('login'));
-    } on PlatformException catch (e) {
-      result(false);
+    _api.login().then((idLoggedIn) {
+      print('loggedIn ' + idLoggedIn.toString());
+      result(idLoggedIn);
+      _startLongPoll();
+    });
+  }
+
+  void updateOnline() async {
+//    if (prefs.settings.showAsOnline) {
+//      if (!_updateOnlineEnabled) _resetOnline();
+//      else _updateOnlineEnabled = true;
+//    } else {
+//      _updateOnlineEnabled = false;
+//      await platform.invokeMethod("set_offline");
+//    }
+  }
+
+  void getLoggedUserInfo(void result(Profile user)) {
+    if (currentUser != null) {
+      result(currentUser);
+    } else {
+      _api.getUsersInfo(List()).then((users) {
+        currentUser = users[0];
+        result(currentUser);
+      });
     }
   }
 
-  Future<List> getFriendIds() async {
-    try {
-      String jsonStr = await platform.invokeMethod('friends');
-      Map<String, dynamic> map = json.decode(jsonStr);
-      return map['response']['items'];
-    } on PlatformException catch (e) {
-      return new List();
+  void loadFriendsInfo(void result(List<Profile> users)) {
+    _api.getFriendIds().then((ids) {
+      _api.getUsersInfo(ids).then((users) => result(users));
+    });
+  }
+
+  ConversationHandler getConversationHandler() {
+    return _conversationHandler;
+  }
+
+  void getHistoryHandler(Conversation conversation,
+      void result(HistoryHandler handler, Chat chat), void error()) {
+    if (conversation.conversationInfo.peer.isChat()) {
+      _api.getChat(conversation.conversationInfo.peer.localId).then(
+          (Chat chat) {
+        result(HistoryHandler(_api, conversation.conversationInfo.peer.id), chat);
+      }, onError: error);
+    } else {
+      result(HistoryHandler(_api, conversation.conversationInfo.peer.id), null);
     }
   }
 
-  Future<List<Profile>> getUsersInfo(List userIds) async {
-    try {
-      List<String> fields = new List();
-      fields.add("photo_100");
-      String jsonStr = await platform
-          .invokeMethod("users_info", {"user_ids": userIds, "fields": fields});
-      Map<String, dynamic> map = json.decode(jsonStr);
-      return Profile.parseList(map['response']);
-    } on PlatformException catch (e) {
-      return new List();
+  void sendMessage(Message message) {
+    _api.sendMessage(message.peerId, message.text);
+    _setMessageToConversation(message);
+  }
+
+  void markAsRead(int peerId) {
+    _api.markAsRead(peerId);
+  }
+
+  void _init() {
+    _conversationHandler = new ConversationHandler(_api);
+    _longPollWorker = LongPollWorker(_eventBus);
+
+    _initNewMessageListener();
+  }
+
+  void _initNewMessageListener() {
+    _eventBus.on<List<Event>>().listen(_loadNewMessages);
+  }
+
+  void _loadNewMessages(List<Event> events) {
+    if(events.length != 0 && events[0] is NewMessage) {
+      List<int> messageIds = List();
+      events.forEach((event) {
+        NewMessage newMessage = event;
+        messageIds.add(newMessage.messageId);
+      });
+      _api.getMessage(messageIds).then((messages) {
+        messages.forEach((message) {
+          _setMessageToConversation(message);
+          _eventBus.fire(message);
+        });
+      });
     }
   }
 
-  Future<Profile> getLoggedUserInfo() async {
-    try {
-      List<String> fields = new List();
-      fields.add("photo_100");
-      String jsonStr = await platform
-          .invokeMethod("users_info", {"fields": fields});
-      Map<String, dynamic> map = json.decode(jsonStr);
-      currentUser = Profile.parseList(map['response'])[0];
-      return currentUser;
-    } on PlatformException catch (e) {
-      return null;
-    }
+  void _setMessageToConversation(Message message) {
+    _conversationHandler.setMessage(message);
   }
 
-  Future<Map<String, dynamic>> getConversations(int offset) async {
-    List<String> fields = new List();
-    fields.add("profile");
-    fields.add("photo_100");
-    String jsonStr = await platform.invokeMethod("conversations",
-        {"fields": fields, "extended": 1, "offset": offset});
-    return json.decode(jsonStr)['response'];
-  }
-
-  Future<Map<String, dynamic>> getHistory(int lastLoadedMessageId, int peerId) async {
-    var params = {};
-    params["fields"] = "description";
-    params["peer_id"] = peerId;
-    if(lastLoadedMessageId != 0)
-        params["start_message_id"] = lastLoadedMessageId;
-    String jsonStr = await platform.invokeMethod("messages_history", params);
-    return json.decode(jsonStr)['response'];
-  }
-
-  Future<Chat> getChat(int chatId) async {
-    var params = {"chat_id": chatId, "fields":"profile, photo_100"};
-    String jsonStr = await platform.invokeMethod("chat", params);
-    Chat chat = Chat.fromJson(json.decode(jsonStr)['response']);
-    return chat;
-  }
-
-  Future<SendMessageResponse> sendMessage(int peerId, String message) async {
-    var params = {"peer_id": peerId, "message": message};
-    String jsonStr = await platform.invokeMethod("send_message", params);
-    return SendMessageResponse.fromJson(json.decode(jsonStr)['response']);
+  void _startLongPoll() {
+    _api.getLongPollServer().then((Map<String, dynamic> map) {
+      _longPollWorker.init(map['server'], map['key'], map['ts']);
+      _longPollWorker.startPooling();
+    });
   }
 }
