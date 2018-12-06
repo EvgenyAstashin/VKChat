@@ -9,22 +9,34 @@ import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 
-class MainActivity: FlutterActivity() {
+class MainActivity : FlutterActivity() {
 
-  val vkMethodsHandler = VKMethodsHandler(this)
+    companion object {
+        var isResumed = false
+    }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    GeneratedPluginRegistrant.registerWith(this)
+    val vkMethodsHandler = VKMethodsHandler(this)
 
-    MethodChannel(flutterView, VKMethodsHandler.CHANNEL).setMethodCallHandler(vkMethodsHandler)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        GeneratedPluginRegistrant.registerWith(this)
 
-//    Log.e("vk_firebase",Settings.Secure.getString(getContentResolver(),
-//            Settings.Secure.ANDROID_ID));
-  }
+        MethodChannel(flutterView, VKMethodsHandler.CHANNEL).setMethodCallHandler(vkMethodsHandler)
+    }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    vkMethodsHandler.onActivityResult(requestCode, resultCode, data)
-  }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        vkMethodsHandler.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isResumed = true
+        VkNotificationManager.removeAllNotifications(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isResumed = false
+    }
 }

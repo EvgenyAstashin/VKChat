@@ -35,6 +35,15 @@ import org.json.JSONObject;
  */
 public class VKApiMessages extends VKApiBase {
 
+    public VKRequest getConversationsById(VKParameters params) {
+        return prepareRequest("getConversationsById", params, new VKParser() {
+            @Override
+            public Object createModel(JSONObject object) {
+                return object.toString();
+            }
+        });
+    }
+
     public VKRequest markAsRead(VKParameters params) {
         return prepareRequest("markAsRead", params, new VKParser() {
             @Override

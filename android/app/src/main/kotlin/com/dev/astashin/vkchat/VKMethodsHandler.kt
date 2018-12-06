@@ -165,7 +165,7 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
     private fun registerPush(p0: MethodCall?, methodResult: MethodChannel.Result?) {
         val params = VKParameters()
             params.set("token", p0?.argument("token"))
-            params.set("settings", "{\"msg\":\"on\", \"chat\":[\"no_sound\",\"no_text\"], \"friend\":\"on\", \"reply\":\"on\", \"mention\":\"fr_of_fr\"}")
+            params.set("settings", "{\"msg\":\"on\",\"chat\":\"on\"}")
             params.set("device_model", "android")
             params.set("system_version", android.os.Build.VERSION.SDK_INT)
             params.set("device_id", Settings.Secure.getString(activity.contentResolver,
@@ -182,7 +182,6 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
     private fun getLogPollServer(p0: MethodCall?, methodResult: MethodChannel.Result?) {
         invokeRequest(VKApi.messages().longPollServer, methodResult)
     }
-
     private fun invokeRequest(request: VKRequest, methodResult: MethodChannel.Result?) {
         request.executeWithListener(object : VKRequestListener() {
             override fun onComplete(response: VKResponse) {

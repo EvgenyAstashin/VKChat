@@ -23,12 +23,13 @@ class MainState extends State<MainWidget> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
     _firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
       print("vk_firebase onLaunch called");
     }, onResume: (Map<String, dynamic> msg) {
       print("vk_firebase onResume called");
     }, onMessage: (Map<String, dynamic> msg) {
-      print("vk_firebase onMessage called");
+      print("vk_firebase onMessage called " + msg.toString());
     });
     _firebaseMessaging.requestNotificationPermissions(
       const IosNotificationSettings(
@@ -46,7 +47,7 @@ class MainState extends State<MainWidget> with WidgetsBindingObserver {
   }
 
   update(String token) {
-    vk.token = token;
+    vk.registerPush(token);
     print('vk_firebase token ' + token);
   }
 

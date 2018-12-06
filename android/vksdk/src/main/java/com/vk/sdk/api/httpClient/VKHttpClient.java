@@ -300,6 +300,7 @@ public class VKHttpClient {
                     }
                 }
             } catch (Exception ignored) {
+                Log.e("vk_firebase", "request error " + ignored.getMessage());
             }
 
             this.connection.setRequestProperty("Connection", "Keep-Alive");

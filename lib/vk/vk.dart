@@ -27,7 +27,6 @@ class VK {
   LongPollWorker _longPollWorker;
 
   Profile currentUser;
-  String token;
 
   EventBus getBus() {
     return _eventBus;
@@ -91,6 +90,10 @@ class VK {
 
   void markAsRead(int peerId) {
     _api.markAsRead(peerId);
+  }
+
+  void registerPush(String token) {
+    _api.registerPush(token);
   }
 
   void _init() {
