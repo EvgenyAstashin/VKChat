@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:event_bus/event_bus.dart';
 import 'package:vk_chat/vk/events.dart';
+import 'package:vk_chat/vk/vk.dart';
 
 class LongPollWorker {
 
@@ -27,9 +28,13 @@ class LongPollWorker {
       _getUpdates().then((http.Response response) {
         print("pooling " + response.body);
         Map<String, dynamic> map = json.decode(response.body);
-        _ts = map['ts'];
-        _update(map['updates']);
-        startPooling();
+        if(map.containsKey('failed')) {
+          VK().startLongPoll();
+        } else {
+          _ts = map['ts'];
+          _update(map['updates']);
+          startPooling();
+        }
       });
   }
 
@@ -39,6 +44,11 @@ class LongPollWorker {
 
   Future<http.Response> _getUpdates() {
     return http.get(_buildUrl());
+  }
+
+  void _error() {
+    VK vk = VK();
+    vk.startLongPoll();
   }
 
   String _buildUrl() {

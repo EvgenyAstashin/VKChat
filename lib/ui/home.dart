@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:vk_chat/models/profile.dart';
 import 'package:vk_chat/ui/chats_list.dart';
@@ -21,8 +19,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    vk.login((isLoggedIn) => loginResult(isLoggedIn));
-    currentPage = Center(child: new CircularProgressIndicator());
+    loadLoggedUserInfo();
+    currentPage = new ChatsListPage();
     drawerHeader = Container(
       padding: const EdgeInsets.all(20.0),
       child: Center(child: new CircularProgressIndicator()),
@@ -41,17 +39,6 @@ class _HomePageState extends State<HomePage> {
       ),
       body: currentPage,
     );
-  }
-
-  void loginResult(bool isLoggedIn) {
-    if (isLoggedIn) {
-      setState(() {
-        currentPage = new ChatsListPage();
-        loadLoggedUserInfo();
-      });
-    } else {
-      exit(0);
-    }
   }
 
   void loadLoggedUserInfo() {

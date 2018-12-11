@@ -12,7 +12,6 @@ import 'package:vk_chat/ui/items/message/message_item.dart';
 import 'package:vk_chat/vk/vk.dart';
 
 class ChatPage extends StatefulWidget {
-
   final Conversation _conversation;
   final ConversationHandler _handler;
 
@@ -53,14 +52,18 @@ class _ChatPageState extends State<ChatPage> {
           children: <Widget>[
             Expanded(
                 child: Container(
-                    color: Color.fromARGB(255, 50, 50, 50), child: ListView.builder(
-    itemCount: historyHandler.messages.length,
-      reverse: true,
-      itemBuilder: (BuildContext context, int index) {
-        return MessageItem(
-            historyHandler.messages.elementAt(index), currentUser, chat);
-      },
-      controller: _scrollController,))),
+                    color: Color.fromARGB(255, 50, 50, 50),
+                    child: ListView.builder(
+                      itemCount: historyHandler != null ? historyHandler.messages.length : 0,
+                      reverse: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        return MessageItem(
+                            historyHandler.messages.elementAt(index),
+                            currentUser,
+                            chat);
+                      },
+                      controller: _scrollController,
+                    ))),
             Row(
               children: <Widget>[
                 Expanded(
@@ -81,8 +84,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-        vk = VK();
-        markAsRead = Preferences().settings.markAsRead;
+    vk = VK();
+    markAsRead = Preferences().settings.markAsRead;
     currentUser = vk.currentUser;
     mainWidget = Center(
       child: CircularProgressIndicator(),
@@ -95,7 +98,8 @@ class _ChatPageState extends State<ChatPage> {
     }, error);
 
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent)
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent)
         historyHandler.getMessages(success, error);
     });
     registerEventListener();
@@ -109,9 +113,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void success() {
-    if(markAsRead)
-      vk.markAsRead(conversation.conversationInfo.peer.id);
-    setState((){});
+    if (markAsRead) vk.markAsRead(conversation.conversationInfo.peer.id);
+    setState(() {});
   }
 
   void error() {
@@ -129,7 +132,7 @@ class _ChatPageState extends State<ChatPage> {
                 shape: BoxShape.circle,
                 image: new DecorationImage(
                     fit: BoxFit.fill, image: _getAvatarWidget()))),
-        Expanded(child:  Text(_getTitle(), overflow: TextOverflow.ellipsis))
+        Expanded(child: Text(_getTitle(), overflow: TextOverflow.ellipsis))
       ],
     );
   }
@@ -176,7 +179,7 @@ class _ChatPageState extends State<ChatPage> {
     String text = myController.text;
     myController.clear();
     Message message = Message.createMessage(
-        DateTime.now().millisecondsSinceEpoch~/1000,
+        DateTime.now().millisecondsSinceEpoch ~/ 1000,
         currentUser.id,
         conversation.conversationInfo.peer.id,
         text);
@@ -185,11 +188,13 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void registerEventListener() {
-    vk.getBus().on<Message>().listen((message) {setMessage(message, false);});
+    vk.getBus().on<Message>().listen((message) {
+      setMessage(message, false);
+    });
   }
 
   void setMessage(Message message, bool outgoing) {
-    if(message.peerId == conversation.conversationInfo.peer.id &&
+    if (message.peerId == conversation.conversationInfo.peer.id &&
         (message.fromId != currentUser.id || outgoing)) {
       setState(() {
         historyHandler.setMessage(message);

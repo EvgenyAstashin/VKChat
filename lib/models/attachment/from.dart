@@ -27,10 +27,18 @@ class From extends Object with _$FromSerializerMixin {
   String photo100;
   @JsonKey(name: 'photo_200')
   String photo200;
+  @JsonKey(name: 'first_name')
+  String firstName;
+  @JsonKey(name: 'last_name')
+  String lastName;
 
   From(this.id, this.name, this.screenName, this.isClosed, this.type,
       this.isAdmin, this.isMember, this.description, this.photo50,
-      this.photo100, this.photo200);
+      this.photo100, this.photo200, this.firstName, this.lastName);
 
   factory From.fromJson(Map<String, dynamic> json) => _$FromFromJson(json);
+
+  bool isFromProfile() {
+    return type == 'profile';
+  }
 }

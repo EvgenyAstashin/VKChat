@@ -14,10 +14,12 @@ class _ChatsListPageState extends State<ChatsListPage> {
 
   Widget mainWidget = new CircularProgressIndicator();
   VK vk = VK();
+  ConversationHandler handler;
 
   @override
   void initState() {
-    vk.getConversationHandler().getConversations(success, error);
+    handler = vk.getConversationHandler();
+    handler.getConversations(success, error);
     registerEventListener();
     super.initState();
   }
@@ -29,16 +31,15 @@ class _ChatsListPageState extends State<ChatsListPage> {
 
   void success() {
     setState(() {
-      ConversationHandler handler = vk.getConversationHandler();
       List<Conversation> conversations = handler.getConversationsList();
       mainWidget = new ListView.builder(
-          itemCount: handler.count,
+          itemCount: conversations.length,
           itemBuilder: (BuildContext context, int index) {
 
             Conversation conversation =
             conversations.elementAt(index);
             if (index == conversations.length - 1)
-              handler.getConversations(s, e);
+              handler.getConversations(success, e);
             return new ConversationItem(conversation);
           });
     });

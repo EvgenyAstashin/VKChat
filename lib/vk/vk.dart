@@ -34,9 +34,8 @@ class VK {
 
   void login(void result(bool isLoggedIn)) async {
     _api.login().then((idLoggedIn) {
-      print('loggedIn ' + idLoggedIn.toString());
       result(idLoggedIn);
-      _startLongPoll();
+      startLongPoll();
     });
   }
 
@@ -127,7 +126,7 @@ class VK {
     _conversationHandler.setMessage(message);
   }
 
-  void _startLongPoll() {
+  void startLongPoll() {
     _api.getLongPollServer().then((Map<String, dynamic> map) {
       _longPollWorker.init(map['server'], map['key'], map['ts']);
       _longPollWorker.startPooling();

@@ -33,13 +33,19 @@ class WallWidget extends StatelessWidget {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _buildPostTitle(),
+              _buildTitle(),
               Text(_wall.text),
               Attachments(_wall.attachments)
             ]));
   }
 
-  Widget _buildPostTitle() {
+  Widget _buildTitle() {
+    if(_wall.from.isFromProfile())
+      return _buildPostTitle("${_wall.from.firstName} ${_wall.from.lastName}", _wall.from.photo100);
+    return _buildPostTitle(_wall.from.name, _wall.from.photo50);
+  }
+
+  Widget _buildPostTitle(String name, String icon) {
     return Row(
       children: <Widget>[
         Container(
@@ -50,9 +56,9 @@ class WallWidget extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: new DecorationImage(
                     fit: BoxFit.fill,
-                    image: new NetworkImage(_wall.from.photo50)))),
+                    image: new NetworkImage(icon)))),
         Flexible(
-            child: Text(_wall.from.name,
+            child: Text(name,
                 style: TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis)),
       ],

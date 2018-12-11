@@ -68,7 +68,7 @@ class VkApi {
   Future<Map<String, dynamic>> getHistory(
       int lastLoadedMessageId, int peerId) async {
     var params = {};
-    params["fields"] = "description";
+    params["fields"] = "description,from,photo_100,photo_50";
     params["peer_id"] = peerId;
     if (lastLoadedMessageId != 0)
       params["start_message_id"] = lastLoadedMessageId;

@@ -24,15 +24,17 @@ class DocWidget extends StatelessWidget {
               children: <Widget>[
                 Icon(Icons.insert_drive_file,
                     size: 35.0, color: Colors.blueAccent),
-                Text(doc.ext, style: TextStyle(color: Colors.white, fontSize: 12.0))
+                Text(doc.ext,
+                    style: TextStyle(color: Colors.white, fontSize: 12.0))
               ],
             )),
-        Text(
+        Flexible(
+            child: Text(
           doc.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 16.0),
-        )
+        ))
       ],
     );
   }

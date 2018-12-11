@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:vk_chat/preferences.dart';
 import 'package:vk_chat/ui/home.dart';
@@ -16,6 +18,7 @@ class MainWidget extends StatefulWidget {
 class MainState extends State<MainWidget> with WidgetsBindingObserver {
   Preferences prefs = Preferences();
   VK vk = VK();
+  Widget currentPage = Center(child: new CircularProgressIndicator());
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -23,32 +26,7 @@ class MainState extends State<MainWidget> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
-    _firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
-      print("vk_firebase onLaunch called");
-    }, onResume: (Map<String, dynamic> msg) {
-      print("vk_firebase onResume called");
-    }, onMessage: (Map<String, dynamic> msg) {
-      print("vk_firebase onMessage called " + msg.toString());
-    });
-    _firebaseMessaging.requestNotificationPermissions(
-      const IosNotificationSettings(
-        sound: true,
-        alert: true,
-        badge: true
-      )
-    );
-    _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
-      print('vk_firebase ios setting registered');
-    });
-    _firebaseMessaging.getToken().then((token) {
-      update(token);
-    });
-  }
-
-  update(String token) {
-    vk.registerPush(token);
-    print('vk_firebase token ' + token);
+    vk.login((isLoggedIn) => _loginResult(isLoggedIn));
   }
 
   @override
@@ -68,6 +46,45 @@ class MainState extends State<MainWidget> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     prefs.load();
-    return new MaterialApp(title: 'VKchat', home: new HomePage());
+    return currentPage;
+  }
+
+  void _registerPush() {
+    _firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
+      print("vk_firebase onLaunch called");
+    }, onResume: (Map<String, dynamic> msg) {
+      print("vk_firebase onResume called");
+    }, onMessage: (Map<String, dynamic> msg) {
+      print("vk_firebase onMessage called " + msg.toString());
+    });
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(
+            sound: true,
+            alert: true,
+            badge: true
+        )
+    );
+    _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
+      print('vk_firebase ios setting registered');
+    });
+    _firebaseMessaging.getToken().then((token) {
+      _update(token);
+    });
+  }
+
+  void _update(String token) {
+    vk.registerPush(token);
+    print('vk_firebase token ' + token);
+  }
+
+  void _loginResult(bool isLoggedIn) {
+    if (isLoggedIn) {
+      setState(() {
+        _registerPush();
+        currentPage = new MaterialApp(title: 'VKchat', home: new HomePage());
+      });
+    } else {
+      exit(0);
+    }
   }
 }

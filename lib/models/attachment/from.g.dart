@@ -18,7 +18,9 @@ From _$FromFromJson(Map<String, dynamic> json) {
       json['description'] as String,
       json['photo_50'] as String,
       json['photo_100'] as String,
-      json['photo_200'] as String);
+      json['photo_200'] as String,
+      json['first_name'] as String,
+      json['last_name'] as String);
 }
 
 abstract class _$FromSerializerMixin {
@@ -33,6 +35,8 @@ abstract class _$FromSerializerMixin {
   String get photo50;
   String get photo100;
   String get photo200;
+  String get firstName;
+  String get lastName;
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
         'name': name,
@@ -44,6 +48,8 @@ abstract class _$FromSerializerMixin {
         'description': description,
         'photo_50': photo50,
         'photo_100': photo100,
-        'photo_200': photo200
+        'photo_200': photo200,
+    'firt_name': firstName,
+    'last_name': lastName
       };
 }
