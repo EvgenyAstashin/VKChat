@@ -7,16 +7,12 @@ part of 'button.dart';
 // **************************************************************************
 
 Button _$ButtonFromJson(Map<String, dynamic> json) {
-  return new Button(
+  return Button(
       json['title'] as String,
       json['action'] == null
           ? null
-          : new Action.fromJson(json['action'] as Map<String, dynamic>));
+          : Action.fromJson(json['action'] as Map<String, dynamic>));
 }
 
-abstract class _$ButtonSerializerMixin {
-  String get title;
-  Action get action;
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'title': title, 'action': action};
-}
+Map<String, dynamic> _$ButtonToJson(Button instance) =>
+    <String, dynamic>{'title': instance.title, 'action': instance.action};

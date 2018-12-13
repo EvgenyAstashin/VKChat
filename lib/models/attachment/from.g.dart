@@ -7,7 +7,7 @@ part of 'from.dart';
 // **************************************************************************
 
 From _$FromFromJson(Map<String, dynamic> json) {
-  return new From(
+  return From(
       json['id'] as int,
       json['name'] as String,
       json['screen_name'] as String,
@@ -23,33 +23,18 @@ From _$FromFromJson(Map<String, dynamic> json) {
       json['last_name'] as String);
 }
 
-abstract class _$FromSerializerMixin {
-  int get id;
-  String get name;
-  String get screenName;
-  int get isClosed;
-  String get type;
-  int get isAdmin;
-  int get isMember;
-  String get description;
-  String get photo50;
-  String get photo100;
-  String get photo200;
-  String get firstName;
-  String get lastName;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'name': name,
-        'screen_name': screenName,
-        'is_closed': isClosed,
-        'type': type,
-        'is_admin': isAdmin,
-        'is_member': isMember,
-        'description': description,
-        'photo_50': photo50,
-        'photo_100': photo100,
-        'photo_200': photo200,
-    'firt_name': firstName,
-    'last_name': lastName
-      };
-}
+Map<String, dynamic> _$FromToJson(From instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'screen_name': instance.screenName,
+      'is_closed': instance.isClosed,
+      'type': instance.type,
+      'is_admin': instance.isAdmin,
+      'is_member': instance.isMember,
+      'description': instance.description,
+      'photo_50': instance.photo50,
+      'photo_100': instance.photo100,
+      'photo_200': instance.photo200,
+      'first_name': instance.firstName,
+      'last_name': instance.lastName
+    };

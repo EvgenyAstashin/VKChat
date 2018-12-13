@@ -7,10 +7,8 @@ part of 'post_source.dart';
 // **************************************************************************
 
 PostSource _$PostSourceFromJson(Map<String, dynamic> json) {
-  return new PostSource(json['type'] as String);
+  return PostSource(json['type'] as String);
 }
 
-abstract class _$PostSourceSerializerMixin {
-  String get type;
-  Map<String, dynamic> toJson() => <String, dynamic>{'type': type};
-}
+Map<String, dynamic> _$PostSourceToJson(PostSource instance) =>
+    <String, dynamic>{'type': instance.type};

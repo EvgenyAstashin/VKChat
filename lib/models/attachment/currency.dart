@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'currency.g.dart';
 
 @JsonSerializable()
-class Currency extends Object with _$CurrencySerializerMixin {
+class Currency {
 
   @JsonKey(name: 'id')
   int id;

@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'comments.g.dart';
 
 @JsonSerializable()
-class Comments extends Object with _$CommentsSerializerMixin  {
+class Comments {
 
   @JsonKey(name: 'count')
   int count;

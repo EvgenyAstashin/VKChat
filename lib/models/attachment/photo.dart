@@ -4,7 +4,7 @@ import 'package:vk_chat/models/attachment/size.dart';
 part 'photo.g.dart';
 
 @JsonSerializable()
-class Photo extends Object with _$PhotoSerializerMixin {
+class Photo {
 
   @JsonKey(name: 'id')
   int id;

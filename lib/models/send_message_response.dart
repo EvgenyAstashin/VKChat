@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'send_message_response.g.dart';
 
 @JsonSerializable()
-class SendMessageResponse extends Object with _$SendMessageResponseSerializerMixin {
+class SendMessageResponse {
 
   @JsonKey(name: 'peer_id')
   int peerId;

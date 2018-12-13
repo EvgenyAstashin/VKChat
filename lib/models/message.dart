@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'message.g.dart';
 
 @JsonSerializable()
-class Message extends Object with _$MessageSerializerMixin {
+class Message {
 
   @JsonKey(name: 'date')
   int date;

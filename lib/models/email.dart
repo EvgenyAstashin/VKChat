@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'email.g.dart';
 
 @JsonSerializable()
-class Email extends Object with _$EmailSerializerMixin {
+class Email {
 
   @JsonKey(name: 'id')
   int id;

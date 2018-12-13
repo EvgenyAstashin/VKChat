@@ -7,18 +7,15 @@ part of 'history.dart';
 // **************************************************************************
 
 History _$HistoryFromJson(Map<String, dynamic> json) {
-  return new History(
+  return History(
       json['count'] as int,
       (json['items'] as List)
-          ?.map((e) => e == null
-              ? null
-              : new Message.fromJson(e as Map<String, dynamic>))
+          ?.map((e) =>
+              e == null ? null : Message.fromJson(e as Map<String, dynamic>))
           ?.toList());
 }
 
-abstract class _$HistorySerializerMixin {
-  int get messagesCount;
-  List<Message> get messages;
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'count': messagesCount, 'items': messages};
-}
+Map<String, dynamic> _$HistoryToJson(History instance) => <String, dynamic>{
+      'count': instance.messagesCount,
+      'items': instance.messages
+    };

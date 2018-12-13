@@ -7,7 +7,7 @@ part of 'chat_settings.dart';
 // **************************************************************************
 
 ChatSettings _$ChatSettingsFromJson(Map<String, dynamic> json) {
-  return new ChatSettings(
+  return ChatSettings(
       json['title'] as String,
       json['members_count'] as int,
       json['state'] as String,
@@ -15,17 +15,11 @@ ChatSettings _$ChatSettingsFromJson(Map<String, dynamic> json) {
       json['active_ids'] as List);
 }
 
-abstract class _$ChatSettingsSerializerMixin {
-  String get title;
-  int get membersCount;
-  String get state;
-  Map<String, dynamic> get photo;
-  List<dynamic> get activeIds;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'title': title,
-        'members_count': membersCount,
-        'state': state,
-        'photo': photo,
-        'active_ids': activeIds
-      };
-}
+Map<String, dynamic> _$ChatSettingsToJson(ChatSettings instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'members_count': instance.membersCount,
+      'state': instance.state,
+      'photo': instance.photo,
+      'active_ids': instance.activeIds
+    };

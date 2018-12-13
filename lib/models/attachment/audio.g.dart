@@ -7,7 +7,7 @@ part of 'audio.dart';
 // **************************************************************************
 
 Audio _$AudioFromJson(Map<String, dynamic> json) {
-  return new Audio(
+  return Audio(
       json['id'] as int,
       json['owner_id'] as int,
       json['artist'] as String,
@@ -19,25 +19,14 @@ Audio _$AudioFromJson(Map<String, dynamic> json) {
       json['is_hq'] as bool);
 }
 
-abstract class _$AudioSerializerMixin {
-  int get id;
-  int get ownerId;
-  String get artist;
-  String get title;
-  int get duration;
-  int get date;
-  String get url;
-  int get genreId;
-  bool get is_hq;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'owner_id': ownerId,
-        'artist': artist,
-        'title': title,
-        'duration': duration,
-        'date': date,
-        'url': url,
-        'genre_id': genreId,
-        'is_hq': is_hq
-      };
-}
+Map<String, dynamic> _$AudioToJson(Audio instance) => <String, dynamic>{
+      'id': instance.id,
+      'owner_id': instance.ownerId,
+      'artist': instance.artist,
+      'title': instance.title,
+      'duration': instance.duration,
+      'date': instance.date,
+      'url': instance.url,
+      'genre_id': instance.genreId,
+      'is_hq': instance.is_hq
+    };

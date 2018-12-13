@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'audio.g.dart';
 
 @JsonSerializable()
-class Audio extends Object with _$AudioSerializerMixin {
+class Audio {
 
   @JsonKey(name: 'id')
   int id;

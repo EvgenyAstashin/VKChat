@@ -7,10 +7,8 @@ part of 'views.dart';
 // **************************************************************************
 
 Views _$ViewsFromJson(Map<String, dynamic> json) {
-  return new Views(json['count'] as int);
+  return Views(json['count'] as int);
 }
 
-abstract class _$ViewsSerializerMixin {
-  int get count;
-  Map<String, dynamic> toJson() => <String, dynamic>{'count': count};
-}
+Map<String, dynamic> _$ViewsToJson(Views instance) =>
+    <String, dynamic>{'count': instance.count};

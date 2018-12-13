@@ -7,7 +7,7 @@ part of 'doc.dart';
 // **************************************************************************
 
 Doc _$DocFromJson(Map<String, dynamic> json) {
-  return new Doc(
+  return Doc(
       json['id'] as int,
       json['owner_id'] as int,
       json['title'] as String,
@@ -18,31 +18,19 @@ Doc _$DocFromJson(Map<String, dynamic> json) {
       json['type'] as int,
       json['preview'] == null
           ? null
-          : new Preview.fromJson(json['preview'] as Map<String, dynamic>),
+          : Preview.fromJson(json['preview'] as Map<String, dynamic>),
       json['access_key'] as String);
 }
 
-abstract class _$DocSerializerMixin {
-  int get id;
-  int get ownerId;
-  String get title;
-  int get size;
-  String get ext;
-  String get url;
-  int get date;
-  int get type;
-  Preview get preview;
-  String get accessKey;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'owner_id': ownerId,
-        'title': title,
-        'size': size,
-        'ext': ext,
-        'url': url,
-        'date': date,
-        'type': type,
-        'preview': preview,
-        'access_key': accessKey
-      };
-}
+Map<String, dynamic> _$DocToJson(Doc instance) => <String, dynamic>{
+      'id': instance.id,
+      'owner_id': instance.ownerId,
+      'title': instance.title,
+      'size': instance.size,
+      'ext': instance.ext,
+      'url': instance.url,
+      'date': instance.date,
+      'type': instance.type,
+      'preview': instance.preview,
+      'access_key': instance.accessKey
+    };

@@ -7,7 +7,7 @@ part of 'group.dart';
 // **************************************************************************
 
 Group _$GroupFromJson(Map<String, dynamic> json) {
-  return new Group(
+  return Group(
       json['id'] as int,
       json['name'] as String,
       json['screen_name'] as String,
@@ -16,19 +16,11 @@ Group _$GroupFromJson(Map<String, dynamic> json) {
       json['photo_100'] as String);
 }
 
-abstract class _$GroupSerializerMixin {
-  int get id;
-  String get name;
-  String get screenName;
-  int get isClosed;
-  String get type;
-  String get photo;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'name': name,
-        'screen_name': screenName,
-        'is_closed': isClosed,
-        'type': type,
-        'photo_100': photo
-      };
-}
+Map<String, dynamic> _$GroupToJson(Group instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'screen_name': instance.screenName,
+      'is_closed': instance.isClosed,
+      'type': instance.type,
+      'photo_100': instance.photo
+    };

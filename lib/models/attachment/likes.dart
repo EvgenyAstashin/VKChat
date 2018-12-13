@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'likes.g.dart';
 
 @JsonSerializable()
-class Likes extends Object with _$LikesSerializerMixin  {
+class Likes {
 
   @JsonKey(name: 'count')
   int count;

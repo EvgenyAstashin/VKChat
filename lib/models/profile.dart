@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'profile.g.dart';
 
 @JsonSerializable()
-class Profile extends Object with _$ProfileSerializerMixin {
+class Profile extends Object {
 
   @JsonKey(name: 'id')
   int id;
@@ -13,8 +13,10 @@ class Profile extends Object with _$ProfileSerializerMixin {
   String lastName;
   @JsonKey(name: 'photo_100')
   String avatar;
+  @JsonKey(name: 'online')
+  int online;
 
-  Profile(this.id, this.firstName, this.lastName, this.avatar);
+  Profile(this.id, this.firstName, this.lastName, this.avatar, this.online);
 
   factory Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);
 

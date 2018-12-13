@@ -7,7 +7,7 @@ part of 'message.dart';
 // **************************************************************************
 
 Message _$MessageFromJson(Map<String, dynamic> json) {
-  return new Message(
+  return Message(
       json['date'] as int,
       json['from_id'] as int,
       json['id'] as int,
@@ -16,45 +16,29 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
       json['text'] as String,
       json['conversation_message_id'] as int,
       (json['fwd_messages'] as List)
-          ?.map((e) => e == null
-              ? null
-              : new Message.fromJson(e as Map<String, dynamic>))
+          ?.map((e) =>
+              e == null ? null : Message.fromJson(e as Map<String, dynamic>))
           ?.toList(),
       json['important'] as bool,
       json['random_id'] as int,
       (json['attachments'] as List)
-          ?.map((e) => e == null
-              ? null
-              : new Attachment.fromJson(e as Map<String, dynamic>))
+          ?.map((e) =>
+              e == null ? null : Attachment.fromJson(e as Map<String, dynamic>))
           ?.toList(),
       json['is_hidden'] as bool);
 }
 
-abstract class _$MessageSerializerMixin {
-  int get date;
-  int get fromId;
-  int get id;
-  int get out;
-  int get peerId;
-  String get text;
-  int get conversationMessageId;
-  List<Message> get fwdMessages;
-  bool get important;
-  int get randomId;
-  List<Attachment> get attachments;
-  bool get isHidden;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'date': date,
-        'from_id': fromId,
-        'id': id,
-        'out': out,
-        'peer_id': peerId,
-        'text': text,
-        'conversation_message_id': conversationMessageId,
-        'fwd_messages': fwdMessages,
-        'important': important,
-        'random_id': randomId,
-        'attachments': attachments,
-        'is_hidden': isHidden
-      };
-}
+Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
+      'date': instance.date,
+      'from_id': instance.fromId,
+      'id': instance.id,
+      'out': instance.out,
+      'peer_id': instance.peerId,
+      'text': instance.text,
+      'conversation_message_id': instance.conversationMessageId,
+      'fwd_messages': instance.fwdMessages,
+      'important': instance.important,
+      'random_id': instance.randomId,
+      'attachments': instance.attachments,
+      'is_hidden': instance.isHidden
+    };

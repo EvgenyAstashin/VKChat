@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'price.g.dart';
 
 @JsonSerializable()
-class Price extends Object with _$PriceSerializerMixin {
+class Price {
 
   @JsonKey(name: 'amount')
   String amount;

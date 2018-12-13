@@ -7,14 +7,12 @@ part of 'conversation_peer.dart';
 // **************************************************************************
 
 Peer _$PeerFromJson(Map<String, dynamic> json) {
-  return new Peer(
+  return Peer(
       json['id'] as int, json['type'] as String, json['local_id'] as int);
 }
 
-abstract class _$PeerSerializerMixin {
-  int get id;
-  String get type;
-  int get localId;
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'id': id, 'type': type, 'local_id': localId};
-}
+Map<String, dynamic> _$PeerToJson(Peer instance) => <String, dynamic>{
+      'id': instance.id,
+      'type': instance.type,
+      'local_id': instance.localId
+    };

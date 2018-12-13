@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'section.g.dart';
 
 @JsonSerializable()
-class Section extends Object with _$SectionSerializerMixin {
+class Section {
 
   @JsonKey(name: 'id')
   int id;

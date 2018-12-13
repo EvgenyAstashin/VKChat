@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'reposts.g.dart';
 
 @JsonSerializable()
-class Reposts extends Object with _$RepostsSerializerMixin  {
+class Reposts {
 
   @JsonKey(name: 'count')
   int count;

@@ -4,7 +4,7 @@ import 'package:vk_chat/models/attachment/photo.dart';
 part 'preview.g.dart';
 
 @JsonSerializable()
-class Preview extends Object with _$PreviewSerializerMixin {
+class Preview {
 
   @JsonKey(name: 'photo')
   Photo photo;

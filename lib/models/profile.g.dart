@@ -7,19 +7,18 @@ part of 'profile.dart';
 // **************************************************************************
 
 Profile _$ProfileFromJson(Map<String, dynamic> json) {
-  return new Profile(json['id'] as int, json['first_name'] as String,
-      json['last_name'] as String, json['photo_100'] as String);
+  return Profile(
+      json['id'] as int,
+      json['first_name'] as String,
+      json['last_name'] as String,
+      json['photo_100'] as String,
+      json['online'] as int);
 }
 
-abstract class _$ProfileSerializerMixin {
-  int get id;
-  String get firstName;
-  String get lastName;
-  String get avatar;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'first_name': firstName,
-        'last_name': lastName,
-        'photo_100': avatar
-      };
-}
+Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
+      'id': instance.id,
+      'first_name': instance.firstName,
+      'last_name': instance.lastName,
+      'photo_100': instance.avatar,
+      'online': instance.online
+    };

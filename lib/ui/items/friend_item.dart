@@ -38,6 +38,7 @@ class FriendItemState extends State<FriendItem> {
             new Expanded(child: new Text("${user.firstName} ${user.lastName}")),
           ],
         ),
+      subtitle: user.online == 0 ? null : Text("online", style: TextStyle(fontSize: 12, color: Color.fromRGBO(0, 0, 255, 127))),
       trailing: new IconButton(
         icon: new Icon(Icons.chat),
         onPressed: () {

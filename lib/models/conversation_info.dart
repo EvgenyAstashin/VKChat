@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'conversation_info.g.dart';
 
 @JsonSerializable()
-class ConversationInfo extends Object with _$ConversationInfoSerializerMixin {
+class ConversationInfo {
 
   @JsonKey(name: 'peer')
   Peer peer;

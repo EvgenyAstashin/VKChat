@@ -7,7 +7,7 @@ part of 'video.dart';
 // **************************************************************************
 
 Video _$VideoFromJson(Map<String, dynamic> json) {
-  return new Video(
+  return Video(
       json['id'] as int,
       json['owner_id'] as int,
       json['title'] as String,
@@ -25,37 +25,20 @@ Video _$VideoFromJson(Map<String, dynamic> json) {
       json['can_add'] as int);
 }
 
-abstract class _$VideoSerializerMixin {
-  int get id;
-  int get ownerId;
-  String get title;
-  int get duration;
-  String get description;
-  int get date;
-  int get comments;
-  int get views;
-  int get width;
-  int get height;
-  String get photo130;
-  String get photo320;
-  String get photo800;
-  String get accessKey;
-  int get canAdd;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'owner_id': ownerId,
-        'title': title,
-        'duration': duration,
-        'description': description,
-        'date': date,
-        'comments': comments,
-        'views': views,
-        'width': width,
-        'height': height,
-        'photo_130': photo130,
-        'photo_320': photo320,
-        'photo_800': photo800,
-        'access_key': accessKey,
-        'can_add': canAdd
-      };
-}
+Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
+      'id': instance.id,
+      'owner_id': instance.ownerId,
+      'title': instance.title,
+      'duration': instance.duration,
+      'description': instance.description,
+      'date': instance.date,
+      'comments': instance.comments,
+      'views': instance.views,
+      'width': instance.width,
+      'height': instance.height,
+      'photo_130': instance.photo130,
+      'photo_320': instance.photo320,
+      'photo_800': instance.photo800,
+      'access_key': instance.accessKey,
+      'can_add': instance.canAdd
+    };

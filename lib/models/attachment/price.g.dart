@@ -7,18 +7,16 @@ part of 'price.dart';
 // **************************************************************************
 
 Price _$PriceFromJson(Map<String, dynamic> json) {
-  return new Price(
+  return Price(
       json['amount'] as String,
       json['currency'] == null
           ? null
-          : new Currency.fromJson(json['currency'] as Map<String, dynamic>),
+          : Currency.fromJson(json['currency'] as Map<String, dynamic>),
       json['text'] as String);
 }
 
-abstract class _$PriceSerializerMixin {
-  String get amount;
-  Currency get currency;
-  String get text;
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'amount': amount, 'currency': currency, 'text': text};
-}
+Map<String, dynamic> _$PriceToJson(Price instance) => <String, dynamic>{
+      'amount': instance.amount,
+      'currency': instance.currency,
+      'text': instance.text
+    };

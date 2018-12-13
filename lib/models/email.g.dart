@@ -7,12 +7,8 @@ part of 'email.dart';
 // **************************************************************************
 
 Email _$EmailFromJson(Map<String, dynamic> json) {
-  return new Email(json['id'] as int, json['address'] as String);
+  return Email(json['id'] as int, json['address'] as String);
 }
 
-abstract class _$EmailSerializerMixin {
-  int get id;
-  String get address;
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'id': id, 'address': address};
-}
+Map<String, dynamic> _$EmailToJson(Email instance) =>
+    <String, dynamic>{'id': instance.id, 'address': instance.address};

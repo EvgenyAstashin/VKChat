@@ -7,12 +7,10 @@ part of 'reposts.dart';
 // **************************************************************************
 
 Reposts _$RepostsFromJson(Map<String, dynamic> json) {
-  return new Reposts(json['count'] as int, json['user_resposted'] as int);
+  return Reposts(json['count'] as int, json['user_resposted'] as int);
 }
 
-abstract class _$RepostsSerializerMixin {
-  int get count;
-  int get userResposted;
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'count': count, 'user_resposted': userResposted};
-}
+Map<String, dynamic> _$RepostsToJson(Reposts instance) => <String, dynamic>{
+      'count': instance.count,
+      'user_resposted': instance.userResposted
+    };

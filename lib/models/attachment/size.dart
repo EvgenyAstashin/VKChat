@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'size.g.dart';
 
 @JsonSerializable()
-class Size extends Object with _$SizeSerializerMixin {
+class Size {
 
   @JsonKey(name: 'type')
   String type;

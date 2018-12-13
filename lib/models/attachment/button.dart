@@ -4,7 +4,7 @@ import 'package:vk_chat/models/attachment/action.dart';
 part 'button.g.dart';
 
 @JsonSerializable()
-class Button extends Object with _$ButtonSerializerMixin {
+class Button {
 
   @JsonKey(name: 'title')
   String title;

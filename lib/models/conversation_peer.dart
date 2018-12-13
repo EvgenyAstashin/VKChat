@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'conversation_peer.g.dart';
 
 @JsonSerializable()
-class Peer extends Object with _$PeerSerializerMixin {
+class Peer {
 
   @JsonKey(name: 'id')
   int id;

@@ -7,21 +7,18 @@ part of 'conversation.dart';
 // **************************************************************************
 
 Conversation _$ConversationFromJson(Map<String, dynamic> json) {
-  return new Conversation(
+  return Conversation(
       json['conversation'] == null
           ? null
-          : new ConversationInfo.fromJson(
+          : ConversationInfo.fromJson(
               json['conversation'] as Map<String, dynamic>),
       json['last_message'] == null
           ? null
-          : new Message.fromJson(json['last_message'] as Map<String, dynamic>));
+          : Message.fromJson(json['last_message'] as Map<String, dynamic>));
 }
 
-abstract class _$ConversationSerializerMixin {
-  ConversationInfo get conversationInfo;
-  Message get lastMessage;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'conversation': conversationInfo,
-        'last_message': lastMessage
-      };
-}
+Map<String, dynamic> _$ConversationToJson(Conversation instance) =>
+    <String, dynamic>{
+      'conversation': instance.conversationInfo,
+      'last_message': instance.lastMessage
+    };

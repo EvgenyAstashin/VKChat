@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'category.g.dart';
 
 @JsonSerializable()
-class Category extends Object with _$CategorySerializerMixin {
+class Category {
 
   @JsonKey(name: 'id')
   int id;

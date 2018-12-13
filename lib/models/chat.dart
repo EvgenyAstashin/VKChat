@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'chat.g.dart';
 
 @JsonSerializable()
-class Chat extends Object with _$ChatSerializerMixin {
+class Chat {
 
   @JsonKey(name: 'type')
   String type;

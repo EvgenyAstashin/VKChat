@@ -5,7 +5,7 @@ import 'package:vk_chat/models/attachment/price.dart';
 part 'market.g.dart';
 
 @JsonSerializable()
-class Market extends Object with _$MarketSerializerMixin {
+class Market {
 
   @JsonKey(name: 'id')
   int id;

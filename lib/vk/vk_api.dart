@@ -4,11 +4,10 @@ import 'package:vk_chat/models/message.dart';
 import 'dart:convert';
 
 import 'package:vk_chat/models/profile.dart';
-import 'package:vk_chat/models/send_message_response.dart';
 
 class VkApi {
   static const LOGIN = 'login';
-  static const GET_FRIEND_IDS = 'friends';
+  static const GET_FRIEND = 'friends';
   static const GET_USER_INFO = 'users_info';
   static const GET_CONVERSATIONS = 'conversations';
   static const GET_MESSAGE_HISTORY = 'messages_history';
@@ -29,11 +28,13 @@ class VkApi {
     }
   }
 
-  Future<List> getFriendIds() async {
+  Future<List<Profile>> getFriends(int offset) async {
     try {
-      String jsonStr = await platform.invokeMethod(GET_FRIEND_IDS);
+      var fields = ['photo_100', 'name'];
+      String jsonStr = await platform.invokeMethod(GET_FRIEND,
+          {"fields": fields, "count": 50, "offset": offset, "order":"hints"});
       Map<String, dynamic> map = json.decode(jsonStr);
-      return map['response']['items'];
+      return Profile.parseList(map['response']['items']);
     } on PlatformException {
       return List();
     }
@@ -41,9 +42,7 @@ class VkApi {
 
   Future<List<Profile>> getUsersInfo(List userIds) async {
     try {
-      List<String> fields = List();
-      fields.add("photo_100");
-
+      var fields = ['photo_100'];
       dynamic params = userIds.length != 0
           ? {"user_ids": userIds, "fields": fields}
           : {"fields": fields};
@@ -57,9 +56,7 @@ class VkApi {
   }
 
   Future<Map<String, dynamic>> getConversations(int offset) async {
-    List<String> fields = List();
-    fields.add("profile");
-    fields.add("photo_100");
+    var fields = ['photo_100', 'profile', 'online'];
     String jsonStr = await platform.invokeMethod(
         GET_CONVERSATIONS, {"fields": fields, "extended": 1, "offset": offset});
     return json.decode(jsonStr)['response'];
@@ -68,7 +65,7 @@ class VkApi {
   Future<Map<String, dynamic>> getHistory(
       int lastLoadedMessageId, int peerId) async {
     var params = {};
-    params["fields"] = "description,from,photo_100,photo_50";
+    params["fields"] = ['description','from','photo_100','photo_50'];
     params["peer_id"] = peerId;
     if (lastLoadedMessageId != 0)
       params["start_message_id"] = lastLoadedMessageId;
@@ -77,7 +74,8 @@ class VkApi {
   }
 
   Future<Chat> getChat(int chatId) async {
-    var params = {"chat_id": chatId, "fields": "profile, photo_100"};
+    var fields = ['photo_100', 'profile'];
+    var params = {"chat_id": chatId, "fields": fields};
     String jsonStr = await platform.invokeMethod(GET_CHAT, params);
     Chat chat = Chat.fromJson(json.decode(jsonStr)['response']);
     return chat;

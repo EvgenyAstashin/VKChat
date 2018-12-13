@@ -61,9 +61,7 @@ class VK {
   }
 
   void loadFriendsInfo(void result(List<Profile> users)) {
-    _api.getFriendIds().then((ids) {
-      _api.getUsersInfo(ids).then((users) => result(users));
-    });
+    _api.getFriends(0).then(result);
   }
 
   ConversationHandler getConversationHandler() {

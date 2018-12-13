@@ -59,7 +59,7 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
         if (p0?.method == LOGIN_METHOD)
             login(p1)
         if (p0?.method == GET_FRIENDS)
-            getFriends(p1)
+            getFriends(p0, p1)
         if (p0?.method == GET_USERS_INFO)
             getUsersInfo(p0, p1)
         if (p0?.method == GET_CONVERSATIONS)
@@ -109,10 +109,8 @@ class VKMethodsHandler(private val activity: Activity) : MethodChannel.MethodCal
         }
     }
 
-    private fun getFriends(methodResult: MethodChannel.Result?) {
-        val params = HashMap<String, Any>()
-        params["order"] = "hints"
-        val request = VKApi.friends().get(VKParameters(params))
+    private fun getFriends(p0: MethodCall?, methodResult: MethodChannel.Result?) {
+        val request = VKApi.friends().get(VKParameters((p0?.arguments as MutableMap<String, Any>?)!!))
         invokeRequest(request, methodResult)
     }
 

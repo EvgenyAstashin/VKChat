@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'group.g.dart';
 
 @JsonSerializable()
-class Group extends Object with _$GroupSerializerMixin {
+class Group {
 
   @JsonKey(name: 'id')
   int id;

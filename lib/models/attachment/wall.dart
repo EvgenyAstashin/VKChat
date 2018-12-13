@@ -11,7 +11,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'wall.g.dart';
 
 @JsonSerializable()
-class Wall extends Object with _$WallSerializerMixin {
+class Wall {
 
   @JsonKey(name: 'id')
   int id;

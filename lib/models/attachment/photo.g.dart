@@ -7,34 +7,25 @@ part of 'photo.dart';
 // **************************************************************************
 
 Photo _$PhotoFromJson(Map<String, dynamic> json) {
-  return new Photo(
+  return Photo(
       json['id'] as int,
       json['album_id'] as int,
       json['owner_id'] as int,
       json['user_id'] as int,
       (json['sizes'] as List)
           ?.map((e) =>
-              e == null ? null : new Size.fromJson(e as Map<String, dynamic>))
+              e == null ? null : Size.fromJson(e as Map<String, dynamic>))
           ?.toList(),
       json['text'] as String,
       json['date'] as int);
 }
 
-abstract class _$PhotoSerializerMixin {
-  int get id;
-  int get albumId;
-  int get ownerId;
-  int get userId;
-  List<Size> get sizes;
-  String get text;
-  int get date;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'album_id': albumId,
-        'owner_id': ownerId,
-        'user_id': userId,
-        'sizes': sizes,
-        'text': text,
-        'date': date
-      };
-}
+Map<String, dynamic> _$PhotoToJson(Photo instance) => <String, dynamic>{
+      'id': instance.id,
+      'album_id': instance.albumId,
+      'owner_id': instance.ownerId,
+      'user_id': instance.userId,
+      'sizes': instance.sizes,
+      'text': instance.text,
+      'date': instance.date
+    };

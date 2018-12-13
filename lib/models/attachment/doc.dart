@@ -4,7 +4,7 @@ import 'package:vk_chat/models/attachment/preview.dart';
 part 'doc.g.dart';
 
 @JsonSerializable()
-class Doc extends Object with _$DocSerializerMixin {
+class Doc {
 
   @JsonKey(name: 'id')
   int id;

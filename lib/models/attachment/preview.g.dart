@@ -7,12 +7,10 @@ part of 'preview.dart';
 // **************************************************************************
 
 Preview _$PreviewFromJson(Map<String, dynamic> json) {
-  return new Preview(json['photo'] == null
+  return Preview(json['photo'] == null
       ? null
-      : new Photo.fromJson(json['photo'] as Map<String, dynamic>));
+      : Photo.fromJson(json['photo'] as Map<String, dynamic>));
 }
 
-abstract class _$PreviewSerializerMixin {
-  Photo get photo;
-  Map<String, dynamic> toJson() => <String, dynamic>{'photo': photo};
-}
+Map<String, dynamic> _$PreviewToJson(Preview instance) =>
+    <String, dynamic>{'photo': instance.photo};

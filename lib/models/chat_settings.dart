@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'chat_settings.g.dart';
 
 @JsonSerializable()
-class ChatSettings extends Object with _$ChatSettingsSerializerMixin {
+class ChatSettings {
 
   @JsonKey(name: 'title')
   String title;

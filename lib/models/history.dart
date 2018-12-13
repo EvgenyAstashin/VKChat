@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'history.g.dart';
 
 @JsonSerializable()
-class History extends Object with _$HistorySerializerMixin {
+class History {
 
   @JsonKey(name: 'count')
   int messagesCount;

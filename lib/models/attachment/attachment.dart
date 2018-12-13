@@ -11,7 +11,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'attachment.g.dart';
 
 @JsonSerializable()
-class Attachment extends Object with _$AttachmentSerializerMixin {
+class Attachment {
 
   @JsonKey(name: 'type')
   String type;

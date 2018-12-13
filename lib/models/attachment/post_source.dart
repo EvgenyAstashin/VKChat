@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'post_source.g.dart';
 
 @JsonSerializable()
-class PostSource extends Object with _$PostSourceSerializerMixin  {
+class PostSource {
 
   @JsonKey(name: 'type')
   String type;

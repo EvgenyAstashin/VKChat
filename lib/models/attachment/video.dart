@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'video.g.dart';
 
 @JsonSerializable()
-class Video extends Object with _$VideoSerializerMixin {
+class Video {
 
   @JsonKey(name: 'id')
   int id;

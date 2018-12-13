@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'action.g.dart';
 
 @JsonSerializable()
-class Action extends Object with _$ActionSerializerMixin {
+class Action {
 
   @JsonKey(name: 'type')
   String type;

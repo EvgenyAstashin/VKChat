@@ -7,32 +7,24 @@ part of 'link.dart';
 // **************************************************************************
 
 Link _$LinkFromJson(Map<String, dynamic> json) {
-  return new Link(
+  return Link(
       json['url'] as String,
       json['title'] as String,
       json['caption'] as String,
       json['description'] as String,
       json['photo'] == null
           ? null
-          : new Photo.fromJson(json['photo'] as Map<String, dynamic>),
+          : Photo.fromJson(json['photo'] as Map<String, dynamic>),
       json['button'] == null
           ? null
-          : new Button.fromJson(json['button'] as Map<String, dynamic>));
+          : Button.fromJson(json['button'] as Map<String, dynamic>));
 }
 
-abstract class _$LinkSerializerMixin {
-  String get url;
-  String get title;
-  String get caption;
-  String get description;
-  Photo get photo;
-  Button get button;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'url': url,
-        'title': title,
-        'caption': caption,
-        'description': description,
-        'photo': photo,
-        'button': button
-      };
-}
+Map<String, dynamic> _$LinkToJson(Link instance) => <String, dynamic>{
+      'url': instance.url,
+      'title': instance.title,
+      'caption': instance.caption,
+      'description': instance.description,
+      'photo': instance.photo,
+      'button': instance.button
+    };

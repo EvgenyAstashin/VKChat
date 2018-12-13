@@ -7,21 +7,14 @@ part of 'size.dart';
 // **************************************************************************
 
 Size _$SizeFromJson(Map<String, dynamic> json) {
-  return new Size(json['type'] as String, json['url'] as String,
+  return Size(json['type'] as String, json['url'] as String,
       json['width'] as int, json['height'] as int, json['src'] as String);
 }
 
-abstract class _$SizeSerializerMixin {
-  String get type;
-  String get url;
-  String get src;
-  int get width;
-  int get height;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'type': type,
-        'url': url,
-        'src': src,
-        'width': width,
-        'height': height
-      };
-}
+Map<String, dynamic> _$SizeToJson(Size instance) => <String, dynamic>{
+      'type': instance.type,
+      'url': instance.url,
+      'src': instance.src,
+      'width': instance.width,
+      'height': instance.height
+    };

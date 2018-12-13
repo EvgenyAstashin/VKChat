@@ -48,7 +48,13 @@ class ConversationItemState extends State<ConversationItem> {
         ],
       ),
       subtitle: _getLastMessage(),
-      trailing: new Text(_getDate()),
+      trailing: new Column(
+        children: <Widget>[
+      Container(
+        margin: EdgeInsets.only(bottom: 10),
+          child: Text(_getOnline(), style: TextStyle(fontSize: 12, color: Color.fromRGBO(0, 0, 255, 127)))),
+      Text(_getDate(), style: TextStyle(fontSize: 12))
+    ],),
       onTap: () {
         Navigator.push(
           context,
@@ -56,6 +62,15 @@ class ConversationItemState extends State<ConversationItem> {
         );
       },
     );
+  }
+
+  String _getOnline() {
+    if (conversation.conversationInfo.peer.isUser()) {
+      Profile profile = handler.profiles[conversation.conversationInfo.peer.localId];
+      if(profile.online == 1)
+        return "online";
+    }
+    return "";
   }
 
   String _getDate() {

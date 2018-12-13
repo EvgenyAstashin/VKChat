@@ -4,7 +4,7 @@ import 'package:vk_chat/models/attachment/preview.dart';
 part 'from.g.dart';
 
 @JsonSerializable()
-class From extends Object with _$FromSerializerMixin {
+class From {
   @JsonKey(name: 'id')
   int id;
   @JsonKey(name: 'name')

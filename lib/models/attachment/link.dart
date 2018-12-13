@@ -5,7 +5,7 @@ import 'package:vk_chat/models/attachment/photo.dart';
 part 'link.g.dart';
 
 @JsonSerializable()
-class Link extends Object with _$LinkSerializerMixin {
+class Link {
 
   @JsonKey(name: 'url')
   String url;
