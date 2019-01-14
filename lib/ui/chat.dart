@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vk_chat/handlers/conversation_handler.dart';
 import 'package:vk_chat/handlers/history_handler.dart';
+import 'package:vk_chat/localization.dart';
 import 'package:vk_chat/models/conversation.dart';
 import 'package:vk_chat/models/email.dart';
 import 'package:vk_chat/models/chat.dart';
@@ -72,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
                         child: TextField(
                           decoration: InputDecoration(
                               border: UnderlineInputBorder(),
-                              hintText: 'Сообщение'),
+                              hintText: VkChatLocalizations.get('message')),
                           controller: myController,
                         ))),
                 IconButton(icon: new Icon(Icons.send), onPressed: sendMessage),

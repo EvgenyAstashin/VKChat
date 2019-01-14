@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vk_chat/localization.dart';
 import 'package:vk_chat/preferences.dart';
 import 'package:vk_chat/vk/vk.dart';
 
@@ -20,10 +21,10 @@ class _SettingsPageState extends State<SettingsPage> {
       padding: EdgeInsets.only(top: 5.0, right: 5.0, left: 15.0),
       child: Column(
         children: <Widget>[
-          _createSwitch("Отображать статус \"online\"",
+          _createSwitch(VkChatLocalizations.get('show_online'),
               prefs.settings.showAsOnline, _statusOnlineChanged),
           _divider(),
-          _createSwitch("Помечать сообщения как прочитанные",
+          _createSwitch(VkChatLocalizations.get('mark_as_readed'),
               prefs.settings.markAsRead, _markAsReadChanged),
           _divider(),
           _pushNotification(),
@@ -60,7 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: <Widget>[
             Expanded(
                 child: Text(
-              "Уведомления",
+                  VkChatLocalizations.get('notification'),
               style: _textStyle,
             )),
             IconButton(
@@ -79,7 +80,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: <Widget>[
             Expanded(
                 child: Text(
-              "Цветовая схема",
+                  VkChatLocalizations.get('color_scheme'),
               style: _textStyle,
             )),
             Container(

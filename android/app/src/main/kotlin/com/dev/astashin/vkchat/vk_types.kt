@@ -8,6 +8,7 @@ class MessageResponse(
         @SerializedName("profiles") var profiles: List<Profile>)
 
 class Message(
+        @SerializedName("id") var id: Int,
         @SerializedName("date") var date: Long,
         @SerializedName("from_id") var fromId: Int,
         @SerializedName("peer_id") var peerId: Int,

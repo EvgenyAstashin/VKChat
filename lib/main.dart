@@ -1,21 +1,25 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:vk_chat/localization.dart';
 import 'package:vk_chat/preferences.dart';
 import 'package:vk_chat/ui/home.dart';
 import 'package:vk_chat/vk/vk.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  runApp(new MainWidget());
+  runApp(App());
 }
 
-class MainWidget extends StatefulWidget {
+class App extends StatefulWidget {
+
   @override
   State<StatefulWidget> createState() => MainState();
 }
 
-class MainState extends State<MainWidget> with WidgetsBindingObserver {
+class MainState extends State<App> with WidgetsBindingObserver {
+
   Preferences prefs = Preferences();
   VK vk = VK();
   Widget currentPage = Center(child: new CircularProgressIndicator());
@@ -46,7 +50,16 @@ class MainState extends State<MainWidget> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     prefs.load();
-    return currentPage;
+    return MaterialApp(
+        localizationsDelegates: [
+          VkChatLocalizationsDelegate()
+        ],
+        supportedLocales: [
+          const Locale('en', ''),
+          const Locale('ru', '')
+        ],
+        home: currentPage
+    );
   }
 
   void _registerPush() {

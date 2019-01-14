@@ -24,8 +24,8 @@ class VkNotificationManager(context: Context) {
 
     companion object {
 
-        const val CHANNEL_ID = "vk_message_chanell"
-        val messages = HashMap<Int, MutableList<Message>>()
+        const val CHANNEL_ID = "vk_message_channel"
+        val messages = HashMap<Int, LinkedHashMap<Int, Message>>()
         val profiles = HashMap<Int, Profile>()
         val conversations = HashMap<Int, Conversation>()
 
@@ -143,12 +143,12 @@ class VkNotificationManager(context: Context) {
     }
 
     private fun saveMessage(message: Message) {
-        var messageList = messages[message.peerId]
-        if (messageList != null) {
-            messageList.add(message)
+        var messageMap = messages[message.peerId]
+        if (messageMap != null) {
+            messageMap[message.id] = message
         } else {
-            messageList = mutableListOf(message)
-            messages[message.peerId] = messageList
+            messageMap = linkedMapOf(Pair(message.id, message))
+            messages[message.peerId] = messageMap
         }
     }
 
@@ -165,19 +165,19 @@ class VkNotificationManager(context: Context) {
         val intent = Intent(context, MainActivity::class.java)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
-        val messages = messages[peerId]
-        var profile = profiles[messages!![0].fromId]
+        val messagesMap = messages[peerId]
+        var profile = profiles[messagesMap!!.values.first().fromId]
         val conversation = conversations[peerId]
 
         val messageStyle = NotificationCompat.MessagingStyle("")
         if (conversation == null) {
             messageStyle.conversationTitle = "${profile!!.firstName} ${profile.lastName}"
-            messages.forEach { message ->
+            messagesMap.values.forEach { message ->
                 messageStyle.addMessage(message.text, message.date, null)
             }
         } else {
             messageStyle.conversationTitle = conversation.settings.title
-            messages.forEach { message ->
+            messagesMap.values.forEach { message ->
                 profile = profiles[message.fromId]
                 messageStyle.addMessage(message.text, message.date, "${profile!!.firstName} ${profile!!.lastName}")
             }

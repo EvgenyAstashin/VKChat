@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vk_chat/localization.dart';
 import 'package:vk_chat/models/profile.dart';
 import 'package:vk_chat/ui/chats_list.dart';
 import 'package:vk_chat/ui/friends_list.dart';
@@ -12,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String title = "Сообщения";
+  String title = VkChatLocalizations.get('messages');
   Widget currentPage;
   Widget drawerHeader;
   VK vk = VK();
@@ -72,10 +73,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Drawer _buildDrawer() {
-    var messages = _buildListItem(Icons.mail, "Сообщения", _onMessagesTap);
-    var friends = _buildListItem(Icons.person, "Друзья", _onFriendsTap);
-    var settings = _buildListItem(Icons.settings, "Настройки", _onSettingsTap);
-    var logout = _buildListItem(Icons.exit_to_app, "Выход", _onLogoutTap);
+    var messages = _buildListItem(Icons.mail, VkChatLocalizations.get('messages'), _onMessagesTap);
+    var friends = _buildListItem(Icons.person, VkChatLocalizations.get('friends'), _onFriendsTap);
+    var settings = _buildListItem(Icons.settings, VkChatLocalizations.get('settings'), _onSettingsTap);
+    var logout = _buildListItem(Icons.exit_to_app, VkChatLocalizations.get('exit'), _onLogoutTap);
 
     var listView = new ListView(
         children: [drawerHeader, messages, friends, settings, logout]);
@@ -91,7 +92,7 @@ class _HomePageState extends State<HomePage> {
 
   void _onMessagesTap() {
     setState(() {
-      title = "Сообщения";
+      title = VkChatLocalizations.get('messages');
       currentPage = new ChatsListPage();
       Navigator.pop(context, true);
     });
@@ -99,7 +100,7 @@ class _HomePageState extends State<HomePage> {
 
   void _onFriendsTap() {
     setState(() {
-      title = "Друзья";
+      title = VkChatLocalizations.get('friends');
       currentPage = new FriendsListPage();
       Navigator.pop(context, true);
     });
@@ -107,7 +108,7 @@ class _HomePageState extends State<HomePage> {
 
   void _onSettingsTap() {
     setState(() {
-      title = "Настройки";
+      title = VkChatLocalizations.get('settings');
       currentPage = new SettingsPage();
       Navigator.pop(context, true);
     });
