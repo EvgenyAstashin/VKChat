@@ -19,7 +19,7 @@ class LinkWidget extends StatelessWidget {
                 Padding(
                     padding: EdgeInsets.only(right: 15.0, left: 15.0, bottom: 5.0),
                     child :Text(_link.title, style: TextStyle(color: Colors.white), maxLines: 2, overflow: TextOverflow.ellipsis)),
-                RaisedButton(onPressed:() {},color: Colors.white, child: Text(_link.button.title),)
+                RaisedButton(onPressed:() {},color: Colors.white, child: Text(_link.button != null ? _link.button.title : 'Открыть'),)
               ])
         )]));
   }

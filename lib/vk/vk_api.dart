@@ -65,8 +65,9 @@ class VkApi {
   Future<Map<String, dynamic>> getHistory(
       int lastLoadedMessageId, int peerId) async {
     var params = {};
-    params["fields"] = ['description','from','photo_100','photo_50'];
+    params["fields"] = ['description','from','photo_100','photo_50', 'profile', 'first_name_acc', 'last_name_acc', 'sex'];
     params["peer_id"] = peerId;
+    params['extended'] = 1;
     if (lastLoadedMessageId != 0)
       params["start_message_id"] = lastLoadedMessageId;
     String jsonStr = await platform.invokeMethod(GET_MESSAGE_HISTORY, params);

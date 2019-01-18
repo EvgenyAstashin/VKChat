@@ -15,6 +15,9 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
       json['peer_id'] as int,
       json['text'] as String,
       json['conversation_message_id'] as int,
+      json['action'] == null
+          ? null
+          : Action.fromJson(json['action'] as Map<String, dynamic>),
       (json['fwd_messages'] as List)
           ?.map((e) =>
               e == null ? null : Message.fromJson(e as Map<String, dynamic>))
@@ -36,6 +39,7 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'peer_id': instance.peerId,
       'text': instance.text,
       'conversation_message_id': instance.conversationMessageId,
+      'action': instance.action,
       'fwd_messages': instance.fwdMessages,
       'important': instance.important,
       'random_id': instance.randomId,

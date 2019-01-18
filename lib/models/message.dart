@@ -1,3 +1,4 @@
+import 'package:vk_chat/models/action.dart';
 import 'package:vk_chat/models/attachment/attachment.dart';
 
 import 'package:json_annotation/json_annotation.dart';
@@ -21,6 +22,8 @@ class Message {
   String text;
   @JsonKey(name: 'conversation_message_id')
   int conversationMessageId;
+  @JsonKey(name: 'action')
+  Action action;
   @JsonKey(name: 'fwd_messages')
   List<Message> fwdMessages;
   @JsonKey(name: 'important')
@@ -33,7 +36,7 @@ class Message {
   bool isHidden;
 
   Message(this.date, this.fromId, this.id, this.out, this.peerId, this.text,
-      this.conversationMessageId, this.fwdMessages, this.important,
+      this.conversationMessageId, this.action, this.fwdMessages, this.important,
       this.randomId, this.attachments, this.isHidden);
 
   Message.createMessage(int date, int fromId, int peerId, String text) {

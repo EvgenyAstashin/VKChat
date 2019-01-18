@@ -10,6 +10,6 @@ class App : FlutterApplication() {
 
     override fun onCreate() {
         super.onCreate()
-        VKSdk.customInitialize(this, 6481244,"5.85")
+        VKSdk.customInitialize(this, 6481244,"5.92")
     }
 }

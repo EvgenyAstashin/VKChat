@@ -15,8 +15,14 @@ class Profile extends Object {
   String avatar;
   @JsonKey(name: 'online')
   int online;
+  @JsonKey(name: 'first_name_acc')
+  String firstNameAcc;
+  @JsonKey(name: 'last_name_acc')
+  String lastNameAcc;
+  @JsonKey(name: 'sex')
+  int sex;
 
-  Profile(this.id, this.firstName, this.lastName, this.avatar, this.online);
+  Profile(this.id, this.firstName, this.lastName, this.avatar, this.online, this.firstNameAcc, this.lastNameAcc, this.sex);
 
   factory Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);
 

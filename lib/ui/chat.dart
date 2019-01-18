@@ -61,7 +61,8 @@ class _ChatPageState extends State<ChatPage> {
                         return MessageItem(
                             historyHandler.messages.elementAt(index),
                             currentUser,
-                            chat);
+                            chat,
+                            historyHandler);
                       },
                       controller: _scrollController,
                     ))),
