@@ -10,7 +10,7 @@ class ChatsListPage extends StatefulWidget {
   State<StatefulWidget> createState() => new _ChatsListPageState();
 }
 
-class _ChatsListPageState extends State<ChatsListPage> {
+class _ChatsListPageState extends State<ChatsListPage> with WidgetsBindingObserver {
 
   Widget mainWidget = new CircularProgressIndicator();
   VK vk = VK();
@@ -20,6 +20,7 @@ class _ChatsListPageState extends State<ChatsListPage> {
   void initState() {
     handler = vk.getConversationHandler();
     handler.getConversations(success, error);
+    WidgetsBinding.instance.addObserver(this);
     registerEventListener();
     super.initState();
   }
@@ -27,6 +28,17 @@ class _ChatsListPageState extends State<ChatsListPage> {
   @override
   Widget build(BuildContext context) {
     return new Center(child: mainWidget);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    int i = 1 + 1;
+    if(state == AppLifecycleState.resumed && !handler.isEmpty())
+      setState(() {
+        mainWidget = new CircularProgressIndicator();
+        handler.clear();
+        handler.getConversations(success, error);
+      });
   }
 
   void success() {
@@ -39,7 +51,7 @@ class _ChatsListPageState extends State<ChatsListPage> {
             Conversation conversation =
             conversations.elementAt(index);
             if (index == conversations.length - 1)
-              handler.getConversations(success, e);
+              handler.getConversations(success, error);
             return new ConversationItem(conversation);
           });
     });
@@ -48,10 +60,6 @@ class _ChatsListPageState extends State<ChatsListPage> {
   void error() {
     print('error');
   }
-
-  void s() {}
-
-  void e() {}
 
   void registerEventListener() {
     vk.getBus().on<Message>().listen((message) {

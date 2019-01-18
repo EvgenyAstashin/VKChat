@@ -14,6 +14,7 @@ class ConversationHandler {
   Map<int, Group> groups;
   Map<int, Email> emails;
   VkApi _api;
+  bool _clear = true;
 
   ConversationHandler(this._api) {
     _conversationsMap = new Map();
@@ -24,6 +25,7 @@ class ConversationHandler {
   }
 
   void getConversations(void success(), void error()) {
+    _clear = false;
     _api.getConversations(_conversationsMap.length).then((Map<String, dynamic> map) {_parse(map); success();}, onError: error);
   }
 
@@ -40,18 +42,33 @@ class ConversationHandler {
     }
   }
 
+  void clear() {
+    _conversationsMap.clear();
+    _conversationsList.clear();
+    profiles.clear();
+    groups.clear();
+    emails.clear();
+    _clear = true;
+  }
+
+  bool isEmpty() {
+    return _conversationsList.isEmpty;
+  }
+
   void _parse(Map<String, dynamic> map) {
-    count = map['count'];
-    Conversation.parseList(map['items']).forEach((conversation) {
-      _conversationsMap[conversation.conversationInfo.peer.id] = conversation;
-      _conversationsList.add(conversation);
-    });
-    if(map['profiles'] != null)
-      _addProfiles(map['profiles']);
-    if(map['groups'] != null)
-    _addGroups(map['groups']);
-    if(map['emails'] != null)
-    _addEmails(map['emails']);
+    if(!_clear) {
+      count = map['count'];
+      Conversation.parseList(map['items']).forEach((conversation) {
+        _conversationsMap[conversation.conversationInfo.peer.id] = conversation;
+        _conversationsList.add(conversation);
+      });
+      if (map['profiles'] != null)
+        _addProfiles(map['profiles']);
+      if (map['groups'] != null)
+        _addGroups(map['groups']);
+      if (map['emails'] != null)
+        _addEmails(map['emails']);
+    }
   }
   
   void _addProfiles(List profiles) {

@@ -6,7 +6,6 @@ import 'package:vk_chat/preferences.dart';
 import 'package:vk_chat/ui/home.dart';
 import 'package:vk_chat/vk/vk.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(App());
