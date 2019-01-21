@@ -3,6 +3,7 @@ import 'package:vk_chat/models/attachment/doc.dart';
 import 'package:vk_chat/models/attachment/link.dart';
 import 'package:vk_chat/models/attachment/market.dart';
 import 'package:vk_chat/models/attachment/photo.dart';
+import 'package:vk_chat/models/attachment/sticker.dart';
 import 'package:vk_chat/models/attachment/video.dart';
 import 'package:vk_chat/models/attachment/wall.dart';
 
@@ -29,8 +30,11 @@ class Attachment {
   Audio audio;
   @JsonKey(name: 'market')
   Market market;
+  @JsonKey(name: 'sticker')
+  Sticker sticker;
+
   
-  Attachment(this.type, this.wall, this.photo, this.doc, this.video, this.link, this.audio, this.market);
+  Attachment(this.type, this.wall, this.photo, this.doc, this.video, this.link, this.audio, this.market, this.sticker);
 
   factory Attachment.fromJson(Map<String, dynamic> json) => _$AttachmentFromJson(json);
 }

@@ -29,7 +29,10 @@ Attachment _$AttachmentFromJson(Map<String, dynamic> json) {
           : Audio.fromJson(json['audio'] as Map<String, dynamic>),
       json['market'] == null
           ? null
-          : Market.fromJson(json['market'] as Map<String, dynamic>));
+          : Market.fromJson(json['market'] as Map<String, dynamic>),
+      json['sticker'] == null
+          ? null
+          : Sticker.fromJson(json['sticker'] as Map<String, dynamic>));
 }
 
 Map<String, dynamic> _$AttachmentToJson(Attachment instance) =>
@@ -41,5 +44,6 @@ Map<String, dynamic> _$AttachmentToJson(Attachment instance) =>
       'video': instance.video,
       'link': instance.link,
       'audio': instance.audio,
-      'market': instance.market
+      'market': instance.market,
+      'sticker': instance.sticker
     };

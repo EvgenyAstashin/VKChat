@@ -5,6 +5,7 @@ import 'package:vk_chat/ui/items/message/attachments/doc.dart';
 import 'package:vk_chat/ui/items/message/attachments/link.dart';
 import 'package:vk_chat/ui/items/message/attachments/market.dart';
 import 'package:vk_chat/ui/items/message/attachments/photo.dart';
+import 'package:vk_chat/ui/items/message/attachments/sticker.dart';
 import 'package:vk_chat/ui/items/message/attachments/video.dart';
 import 'package:vk_chat/ui/items/message/attachments/wall.dart';
 
@@ -41,6 +42,7 @@ class Attachments extends StatelessWidget {
     if (attachment.type == "wall") return _buildWall(attachment);
     if (attachment.type == "market") return _buildMarket(attachment);
     if (attachment.type == "link") return _buildLink(attachment);
+    if (attachment.type == "sticker") return _buildSticker(attachment);
     return Text(attachment.type);
   }
 
@@ -70,6 +72,10 @@ class Attachments extends StatelessWidget {
 
   Widget _buildLink(Attachment attachment) {
     return LinkWidget(attachment.link);
+  }
+
+  Widget _buildSticker(Attachment attachment) {
+    return StickerWidget(attachment.sticker);
   }
 
   Widget emptyView() {
