@@ -81,7 +81,7 @@ class ConversationHandler {
   }
 
   String _getUserConversationTitle(Conversation conversation) {
-    Profile profile = profiles[conversation..getLocalId()];
+    Profile profile = profiles[conversation.getLocalId()];
     return "${profile.firstName} ${profile.lastName}";
   }
 
@@ -90,7 +90,7 @@ class ConversationHandler {
   }
 
   String _getGroupConversationTitle(Conversation conversation) {
-    Group group = groups[conversation..getLocalId()];
+    Group group = groups[conversation.getLocalId()];
     return group.name;
   }
 
