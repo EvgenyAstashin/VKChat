@@ -22,4 +22,12 @@ class Conversation {
     conversations.forEach((map) => parsedConversations.add(Conversation.fromJson(map)));
     return parsedConversations;
   }
+
+  int getId(){
+    return conversationInfo.peer.id;
+  }
+
+  int getLocalId() {
+    return conversationInfo.peer.localId;
+  }
 }

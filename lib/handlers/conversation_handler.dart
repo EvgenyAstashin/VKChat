@@ -4,6 +4,7 @@ import 'package:vk_chat/models/group.dart';
 import 'package:vk_chat/models/message.dart';
 import 'package:vk_chat/models/profile.dart';
 import 'package:vk_chat/vk/vk_api.dart';
+import 'package:flutter/material.dart';
 
 class ConversationHandler {
 
@@ -55,11 +56,72 @@ class ConversationHandler {
     return _conversationsList.isEmpty;
   }
 
+  String getConversationTitle(int conversationId) {
+    Conversation conversation = _conversationsMap[conversationId];
+    if (conversation.conversationInfo.peer.isUser())
+      return _getUserConversationTitle(conversation);
+    else if (conversation.conversationInfo.peer.isChat())
+      return _getChatConversationTitle(conversation);
+    else if (conversation.conversationInfo.peer.isGroup())
+      return _getGroupConversationTitle(conversation);
+    else if (conversation.conversationInfo.peer.isEmail())
+      return _getEmailConversationTitle(conversation);
+    return "";
+  }
+
+  ImageProvider getConversationAvatarProvider(int conversationId) {
+    Conversation conversation = _conversationsMap[conversationId];
+    if (conversation.conversationInfo.peer.isUser())
+      return _getUserAvatarProvider(conversation);
+    else if (conversation.conversationInfo.peer.isChat())
+      return _getChatAvatarProvider(conversation);
+    else if (conversation.conversationInfo.peer.isGroup())
+      return _getGroupAvatarProvider(conversation);
+    return new NetworkImage('');
+  }
+
+  String _getUserConversationTitle(Conversation conversation) {
+    Profile profile = profiles[conversation..getLocalId()];
+    return "${profile.firstName} ${profile.lastName}";
+  }
+
+  String _getChatConversationTitle(Conversation conversation) {
+    return conversation.conversationInfo.chatSettings.title;
+  }
+
+  String _getGroupConversationTitle(Conversation conversation) {
+    Group group = groups[conversation..getLocalId()];
+    return group.name;
+  }
+
+  String _getEmailConversationTitle(Conversation conversation) {
+    Email email = emails[conversation.getLocalId()];
+    return email.address;
+  }
+
+  ImageProvider _getUserAvatarProvider(Conversation conversation) {
+    Profile profile = profiles[conversation.getLocalId()];
+    return new NetworkImage(profile.avatar);
+  }
+
+  ImageProvider _getChatAvatarProvider(Conversation conversation) {
+    String photo = conversation.conversationInfo.chatSettings.getPhoto();
+    if (photo != null)
+      return new NetworkImage(photo);
+    else
+      return new AssetImage('assets/chat.png');
+  }
+
+  ImageProvider _getGroupAvatarProvider(Conversation conversation) {
+    Group group = groups[conversation.getLocalId()];
+    return new NetworkImage(group.photo);
+  }
+
   void _parse(Map<String, dynamic> map) {
     if(!_clear) {
       count = map['count'];
       Conversation.parseList(map['items']).forEach((conversation) {
-        _conversationsMap[conversation.conversationInfo.peer.id] = conversation;
+        _conversationsMap[conversation.getId()] = conversation;
         _conversationsList.add(conversation);
       });
       if (map['profiles'] != null)

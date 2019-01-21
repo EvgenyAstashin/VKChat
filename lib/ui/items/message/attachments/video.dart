@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:vk_chat/models/attachment/attachment.dart';
 import 'package:vk_chat/models/attachment/video.dart';
 
 class VideoWidget extends StatelessWidget {
 
-  Video _video;
+  final Video _video;
 
   VideoWidget(this._video);
 

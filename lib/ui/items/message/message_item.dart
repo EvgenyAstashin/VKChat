@@ -9,10 +9,10 @@ import 'package:vk_chat/ui/items/message/attachments/attachments.dart';
 import 'package:vk_chat/ui/views/linkable_text.dart';
 
 class MessageItem extends StatelessWidget {
-  Message message;
-  Profile currentUser;
-  Chat chat;
-  HistoryHandler historyHandler;
+  final Message message;
+  final Profile currentUser;
+  final Chat chat;
+  final HistoryHandler historyHandler;
 
   MessageItem(this.message, this.currentUser, this.chat, this.historyHandler);
 

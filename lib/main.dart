@@ -17,7 +17,7 @@ class App extends StatefulWidget {
   State<StatefulWidget> createState() => MainState();
 }
 
-class MainState extends State<App> with WidgetsBindingObserver {
+class MainState extends State<App>{
 
   Preferences prefs = Preferences();
   VK vk = VK();
@@ -28,22 +28,7 @@ class MainState extends State<App> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     vk.login((isLoggedIn) => _loginResult(isLoggedIn));
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-//    if(state == AppLifecycleState.resumed)
-//      vk.setOnline();
-//    if(state == AppLifecycleState.paused)
-//      vk.setOffline();
   }
 
   @override
@@ -62,13 +47,10 @@ class MainState extends State<App> with WidgetsBindingObserver {
   }
 
   void _registerPush() {
-    _firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
-      print("vk_firebase onLaunch called");
-    }, onResume: (Map<String, dynamic> msg) {
-      print("vk_firebase onResume called");
-    }, onMessage: (Map<String, dynamic> msg) {
-      print("vk_firebase onMessage called " + msg.toString());
-    });
+    _firebaseMessaging.configure(
+        onLaunch: (Map<String, dynamic> msg) {},
+        onResume: (Map<String, dynamic> msg) {},
+        onMessage: (Map<String, dynamic> msg) {});
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(
             sound: true,
@@ -76,9 +58,8 @@ class MainState extends State<App> with WidgetsBindingObserver {
             badge: true
         )
     );
-    _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
-      print('vk_firebase ios setting registered');
-    });
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {});
     _firebaseMessaging.getToken().then((token) {
       _update(token);
     });
@@ -86,14 +67,13 @@ class MainState extends State<App> with WidgetsBindingObserver {
 
   void _update(String token) {
     vk.registerPush(token);
-    print('vk_firebase token ' + token);
   }
 
   void _loginResult(bool isLoggedIn) {
     if (isLoggedIn) {
       setState(() {
         _registerPush();
-        currentPage = new MaterialApp(title: 'VKchat', home: new HomePage());
+        currentPage = new MaterialApp(title: VkChatLocalizations.get('app_name'), home: new HomePage());
       });
     } else {
       exit(0);

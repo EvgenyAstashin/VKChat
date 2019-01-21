@@ -3,7 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:vk_chat/models/attachment/audio.dart';
 
 class AudioWidget extends StatelessWidget {
-  Audio _audio;
+
+  final Audio _audio;
 
   AudioWidget(this._audio);
 

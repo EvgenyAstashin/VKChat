@@ -25,6 +25,7 @@ class VkChatLocalizations {
 
   static Map<String, Map<String, String>> _localizedValues = {
     'en': {
+      'app_name':'VKchat',
       'messages': 'Messages',
       'message': 'Message',
       'friends': "Friends",
@@ -56,10 +57,13 @@ class VkChatLocalizations {
       'invite_user_by_link_f': 'joined the conversation',
       'chat_kicked_user_f': 'excluded',
       'pin_message_f': 'pin the message',
-      'unpin_message_f': 'unpin the message'
+      'unpin_message_f': 'unpin the message',
+
+      'online': 'online'
 
     },
     'ru': {
+      'app_name':'VKchat',
       'messages': 'Сообщения',
       'message': 'Сообщение',
       'friends': "Друзья",
@@ -91,7 +95,9 @@ class VkChatLocalizations {
       'invite_user_by_link_f': 'присоединилась к беседе',
       'chat_kicked_user_f': 'исключила',
       'pin_message_f': 'закрепила сообщение',
-      'unpin_message_f': 'открепила сообщение'
+      'unpin_message_f': 'открепила сообщение',
+
+      'online': 'online'
     },
   };
 

@@ -4,6 +4,7 @@ import 'package:vk_chat/models/attachment/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LinkWidget extends StatelessWidget {
+
   final Link _link;
 
   LinkWidget(this._link);

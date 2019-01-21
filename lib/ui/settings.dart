@@ -100,7 +100,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _statusOnlineChanged(bool status) {
     setState(() {
-      prefs.saveShowOnline(status);
       VK().updateOnline();
     });
   }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:vk_chat/models/attachment/attachment.dart';
 import 'package:vk_chat/models/attachment/photo.dart';
 
 class PhotoWidget extends StatelessWidget {
 
-  Photo _photo;
+  final Photo _photo;
 
   PhotoWidget(this._photo);
 

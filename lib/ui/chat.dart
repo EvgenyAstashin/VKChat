@@ -3,9 +3,7 @@ import 'package:vk_chat/handlers/conversation_handler.dart';
 import 'package:vk_chat/handlers/history_handler.dart';
 import 'package:vk_chat/localization.dart';
 import 'package:vk_chat/models/conversation.dart';
-import 'package:vk_chat/models/email.dart';
 import 'package:vk_chat/models/chat.dart';
-import 'package:vk_chat/models/group.dart';
 import 'package:vk_chat/models/message.dart';
 import 'package:vk_chat/models/profile.dart';
 import 'package:vk_chat/preferences.dart';
@@ -55,7 +53,9 @@ class _ChatPageState extends State<ChatPage> {
                 child: Container(
                     color: Color.fromARGB(255, 50, 50, 50),
                     child: ListView.builder(
-                      itemCount: historyHandler != null ? historyHandler.messages.length : 0,
+                      itemCount: historyHandler != null
+                          ? historyHandler.messages.length
+                          : 0,
                       reverse: true,
                       itemBuilder: (BuildContext context, int index) {
                         return MessageItem(
@@ -89,22 +89,12 @@ class _ChatPageState extends State<ChatPage> {
     vk = VK();
     markAsRead = Preferences().settings.markAsRead;
     currentUser = vk.currentUser;
-    mainWidget = Center(
-      child: CircularProgressIndicator(),
-    );
+    mainWidget = _buildProgress();
 
-    vk.getHistoryHandler(conversation, (historyHandler, chat) {
-      this.historyHandler = historyHandler;
-      this.chat = chat;
-      this.historyHandler.getMessages(success, error);
-    }, error);
+    _loadFirstMessages();
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent)
-        historyHandler.getMessages(success, error);
-    });
-    registerEventListener();
+    _registerScrollListener();
+    _registerEventListener();
     super.initState();
   }
 
@@ -114,8 +104,30 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 
+  Widget _buildProgress() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  void _loadFirstMessages() {
+    vk.getHistoryHandler(conversation, (historyHandler, chat) {
+      this.historyHandler = historyHandler;
+      this.chat = chat;
+      this.historyHandler.getMessages(success, error);
+    }, error);
+  }
+
+  void _registerScrollListener() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent)
+        historyHandler.getMessages(success, error);
+    });
+  }
+
   void success() {
-    if (markAsRead) vk.markAsRead(conversation.conversationInfo.peer.id);
+    if (markAsRead) vk.markAsRead(conversation.getId());
     setState(() {});
   }
 
@@ -133,48 +145,15 @@ class _ChatPageState extends State<ChatPage> {
             decoration: new BoxDecoration(
                 shape: BoxShape.circle,
                 image: new DecorationImage(
-                    fit: BoxFit.fill, image: _getAvatarWidget()))),
-        Expanded(child: Text(_getTitle(), overflow: TextOverflow.ellipsis))
+                    fit: BoxFit.fill,
+                    image: conversationHandler
+                        .getConversationAvatarProvider(conversation.getId())))),
+        Expanded(
+            child: Text(
+                conversationHandler.getConversationTitle(conversation.getId()),
+                overflow: TextOverflow.ellipsis))
       ],
     );
-  }
-
-  String _getTitle() {
-    if (conversation.conversationInfo.peer.isUser()) {
-      Profile profile = conversationHandler
-          .profiles[conversation.conversationInfo.peer.localId];
-      return "${profile.firstName} ${profile.lastName}";
-    } else if (conversation.conversationInfo.peer.isChat()) {
-      return conversation.conversationInfo.chatSettings.title;
-    } else if (conversation.conversationInfo.peer.isGroup()) {
-      Group group = conversationHandler
-          .groups[conversation.conversationInfo.peer.localId];
-      return group.name;
-    } else if (conversation.conversationInfo.peer.isEmail()) {
-      Email email = conversationHandler
-          .emails[conversation.conversationInfo.peer.localId];
-      return email.address;
-    }
-    return "";
-  }
-
-  ImageProvider _getAvatarWidget() {
-    if (conversation.conversationInfo.peer.isUser()) {
-      Profile profile = conversationHandler
-          .profiles[conversation.conversationInfo.peer.localId];
-      return new NetworkImage(profile.avatar);
-    } else if (conversation.conversationInfo.peer.isChat()) {
-      String photo = conversation.conversationInfo.chatSettings.getPhoto();
-      if (photo != null)
-        return new NetworkImage(photo);
-      else
-        return new AssetImage('assets/chat.png');
-    } else if (conversation.conversationInfo.peer.isGroup()) {
-      Group group = conversationHandler
-          .groups[conversation.conversationInfo.peer.localId];
-      return new NetworkImage(group.photo);
-    }
-    return new NetworkImage('');
   }
 
   void sendMessage() {
@@ -183,20 +162,20 @@ class _ChatPageState extends State<ChatPage> {
     Message message = Message.createMessage(
         DateTime.now().millisecondsSinceEpoch ~/ 1000,
         currentUser.id,
-        conversation.conversationInfo.peer.id,
+        conversation.getId(),
         text);
     setMessage(message, true);
     vk.sendMessage(message);
   }
 
-  void registerEventListener() {
+  void _registerEventListener() {
     vk.getBus().on<Message>().listen((message) {
       setMessage(message, false);
     });
   }
 
   void setMessage(Message message, bool outgoing) {
-    if (message.peerId == conversation.conversationInfo.peer.id &&
+    if (message.peerId == conversation.getId() &&
         (message.fromId != currentUser.id || outgoing)) {
       setState(() {
         historyHandler.setMessage(message);

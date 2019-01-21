@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:vk_chat/handlers/conversation_handler.dart';
+import 'package:vk_chat/localization.dart';
 import 'package:vk_chat/models/conversation.dart';
-import 'package:vk_chat/models/email.dart';
-import 'package:vk_chat/models/group.dart';
 import 'package:vk_chat/models/profile.dart';
 import 'package:intl/intl.dart';
 import 'package:vk_chat/ui/chat.dart';
 import 'package:vk_chat/vk/vk.dart';
 
 class ConversationItem extends StatefulWidget {
-  Conversation conversation;
+  final Conversation _conversation;
 
   ConversationItem(Conversation conversation)
-      : conversation = conversation,
+      : _conversation = conversation,
         super(key: new ObjectKey(conversation));
 
   @override
   State<StatefulWidget> createState() {
-    return new ConversationItemState(conversation);
+    return new ConversationItemState(_conversation);
   }
 }
 
@@ -36,29 +35,35 @@ class ConversationItemState extends State<ConversationItem> {
           decoration: new BoxDecoration(
               shape: BoxShape.circle,
               image: new DecorationImage(
-                  fit: BoxFit.fill, image: _getAvatarWidget()))),
+                  fit: BoxFit.fill,
+                  image: handler
+                      .getConversationAvatarProvider(conversation.getId())))),
       title: new Row(
         children: <Widget>[
           new Expanded(
               child: new Text(
-            _getTitle(),
+            handler.getConversationTitle(conversation.getId()),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           )),
         ],
       ),
-      subtitle: _getLastMessage(),
+      subtitle: _buildLastMessage(),
       trailing: new Column(
         children: <Widget>[
-      Container(
-        margin: EdgeInsets.only(bottom: 10),
-          child: Text(_getOnline(), style: TextStyle(fontSize: 12, color: Color.fromRGBO(0, 0, 255, 127)))),
-      Text(_getDate(), style: TextStyle(fontSize: 12))
-    ],),
+          Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: Text(_getOnline(),
+                  style: TextStyle(
+                      fontSize: 12, color: Color.fromRGBO(0, 0, 255, 127)))),
+          Text(_getDate(), style: TextStyle(fontSize: 12))
+        ],
+      ),
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ChatPage(conversation, handler)),
+          MaterialPageRoute(
+              builder: (context) => ChatPage(conversation, handler)),
         );
       },
     );
@@ -66,16 +71,15 @@ class ConversationItemState extends State<ConversationItem> {
 
   String _getOnline() {
     if (conversation.conversationInfo.peer.isUser()) {
-      Profile profile = handler.profiles[conversation.conversationInfo.peer.localId];
-      if(profile.online == 1)
-        return "online";
+      Profile profile = handler.profiles[conversation.getLocalId()];
+      if (profile.online == 1) return VkChatLocalizations.get('online');
     }
     return "";
   }
 
   String _getDate() {
-    DateTime messageDate = DateTime
-        .fromMillisecondsSinceEpoch(conversation.lastMessage.date * 1000);
+    DateTime messageDate = DateTime.fromMillisecondsSinceEpoch(
+        conversation.lastMessage.date * 1000);
     DateTime now = DateTime.now();
     if (messageDate.year == now.year) {
       if (messageDate.month == now.month && messageDate.day == now.day) {
@@ -88,90 +92,44 @@ class ConversationItemState extends State<ConversationItem> {
     }
   }
 
-  String _getTitle() {
-    if (conversation.conversationInfo.peer.isUser()) {
-      Profile profile =
-          handler.profiles[conversation.conversationInfo.peer.localId];
-      return "${profile.firstName} ${profile.lastName}";
-    } else if (conversation.conversationInfo.peer.isChat()) {
-      return conversation.conversationInfo.chatSettings.title;
-    } else if (conversation.conversationInfo.peer.isGroup()) {
-      Group group = handler.groups[conversation.conversationInfo.peer.localId];
-      return group.name;
-    } else if (conversation.conversationInfo.peer.isEmail()) {
-      Email email = handler.emails[conversation.conversationInfo.peer.localId];
-      return email.address;
-    }
-    return "";
-  }
-
-  ImageProvider _getAvatarWidget() {
-    if (conversation.conversationInfo.peer.isUser()) {
-      Profile profile =
-          handler.profiles[conversation.conversationInfo.peer.localId];
-      return new NetworkImage(profile.avatar);
-    } else if (conversation.conversationInfo.peer.isChat()) {
-      String photo = conversation.conversationInfo.chatSettings.getPhoto();
-      if (photo != null)
-        return new NetworkImage(photo);
-      else
-        return new AssetImage('assets/chat.png');
-    } else if (conversation.conversationInfo.peer.isGroup()) {
-      Group group = handler.groups[conversation.conversationInfo.peer.localId];
-      return new NetworkImage(group.photo);
-    }
-    return new NetworkImage('');
-  }
-
-  Widget _getLastMessage() {
+  Widget _buildLastMessage() {
     if (conversation.conversationInfo.peer.isUser() ||
         conversation.conversationInfo.peer.isGroup() ||
         conversation.conversationInfo.peer.isEmail()) {
       if (conversation.conversationInfo.peer.localId ==
           conversation.lastMessage.fromId) {
-        return new Text(conversation.lastMessage.text,
-            overflow: TextOverflow.ellipsis, maxLines: 1);
+        return _buildSimpleMessage(conversation.lastMessage.text);
       } else {
         if (handler.profiles[conversation.lastMessage.fromId] != null)
-          return new Row(
-            children: <Widget>[
-              new Container(
-                  width: 20.0,
-                  height: 20.0,
-                  margin: new EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                  decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: new NetworkImage(handler
-                              .profiles[conversation.lastMessage.fromId]
-                              .avatar)))),
-              new Expanded(
-                  child: new Text(conversation.lastMessage.text,
-                      overflow: TextOverflow.ellipsis, maxLines: 1))
-            ],
-          );
+          return _buildMessageWithAvatar(
+              handler.profiles[conversation.lastMessage.fromId].avatar,
+              conversation.lastMessage.text);
       }
     } else if (conversation.conversationInfo.peer.isChat()) {
-      return new Row(
-        children: <Widget>[
-          new Container(
-              width: 20.0,
-              height: 20.0,
-              margin: new EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-              decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: new DecorationImage(
-                      fit: BoxFit.fill,
-                      image: new NetworkImage(handler
-                          .profiles[conversation.lastMessage.fromId].avatar)))),
-          new Expanded(
-              child: new Text(conversation.lastMessage.text,
-                  overflow: TextOverflow.ellipsis, maxLines: 1))
-        ],
-      );
+      return _buildMessageWithAvatar(
+          handler.profiles[conversation.lastMessage.fromId].avatar,
+          conversation.lastMessage.text);
     }
     return new Text('', overflow: TextOverflow.ellipsis, maxLines: 1);
-    ;
+  }
+
+  Widget _buildMessageWithAvatar(String avatarUrl, String message) {
+    return new Row(
+      children: <Widget>[
+        new Container(
+            width: 20.0,
+            height: 20.0,
+            margin: new EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+            decoration: new BoxDecoration(
+                shape: BoxShape.circle,
+                image: new DecorationImage(
+                    fit: BoxFit.fill, image: new NetworkImage(avatarUrl)))),
+        new Expanded(child: _buildSimpleMessage(conversation.lastMessage.text))
+      ],
+    );
+  }
+
+  Widget _buildSimpleMessage(String message) {
+    return new Text(message, overflow: TextOverflow.ellipsis, maxLines: 1);
   }
 }

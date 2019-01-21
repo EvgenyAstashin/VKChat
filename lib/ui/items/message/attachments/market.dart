@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:vk_chat/models/attachment/market.dart';
 
 class MarketWidget extends StatelessWidget {
-  Market _market;
+
+  final Market _market;
 
   MarketWidget(this._market);
 

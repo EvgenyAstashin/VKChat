@@ -7,7 +7,6 @@ import 'package:vk_chat/ui/settings.dart';
 import 'package:vk_chat/vk/vk.dart';
 
 class HomePage extends StatefulWidget {
-
   @override
   _HomePageState createState() => new _HomePageState();
 }
@@ -31,7 +30,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
       drawer: _buildDrawer(),
       appBar: new AppBar(
@@ -51,17 +49,12 @@ class _HomePageState extends State<HomePage> {
       var fontFamily = "Roboto";
       var accountName = new Text("${profile.firstName} ${profile.lastName}",
           style: new TextStyle(
-              color: Colors.white,
-              fontSize: 18.0,
-              fontFamily: fontFamily));
+              color: Colors.white, fontSize: 18.0, fontFamily: fontFamily));
       var accountPicture = Container(
           decoration: new BoxDecoration(
               shape: BoxShape.circle,
               image: new DecorationImage(
-                  fit: BoxFit.fill,
-                  image: new NetworkImage(profile.avatar)
-              )
-          ));
+                  fit: BoxFit.fill, image: new NetworkImage(profile.avatar))));
 
       drawerHeader = new UserAccountsDrawerHeader(
         accountName: accountName,
@@ -73,10 +66,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Drawer _buildDrawer() {
-    var messages = _buildListItem(Icons.mail, VkChatLocalizations.get('messages'), _onMessagesTap);
-    var friends = _buildListItem(Icons.person, VkChatLocalizations.get('friends'), _onFriendsTap);
-    var settings = _buildListItem(Icons.settings, VkChatLocalizations.get('settings'), _onSettingsTap);
-    var logout = _buildListItem(Icons.exit_to_app, VkChatLocalizations.get('exit'), _onLogoutTap);
+    var messages = _buildListItem(
+        Icons.mail, VkChatLocalizations.get('messages'), _onMessagesTap);
+    var friends = _buildListItem(
+        Icons.person, VkChatLocalizations.get('friends'), _onFriendsTap);
+    var settings = _buildListItem(
+        Icons.settings, VkChatLocalizations.get('settings'), _onSettingsTap);
+    var logout = _buildListItem(
+        Icons.exit_to_app, VkChatLocalizations.get('exit'), _onLogoutTap);
 
     var listView = new ListView(
         children: [drawerHeader, messages, friends, settings, logout]);

@@ -10,7 +10,7 @@ import 'package:vk_chat/ui/items/message/attachments/wall.dart';
 
 class Attachments extends StatelessWidget {
 
-  List<Attachment> attachments;
+  final List<Attachment> attachments;
 
   Attachments(this.attachments);
 

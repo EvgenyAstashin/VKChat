@@ -20,7 +20,6 @@ class Preferences {
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     settings.markAsRead = prefs.getBool(Settings.MARK_AS_READED) ?? false;
-    settings.showAsOnline = prefs.getBool(Settings.SHOW_AS_ONLINE) ?? true;
     settings.enablePushNotification = prefs.getBool(Settings.PUSH_NOTIFICATION) ?? false;
   }
 
@@ -28,12 +27,6 @@ class Preferences {
     settings.markAsRead = markAsRead;
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(Settings.MARK_AS_READED, markAsRead);
-  }
-
-  Future<void> saveShowOnline(bool showAsOnline) async {
-    settings.showAsOnline = showAsOnline;
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool(Settings.SHOW_AS_ONLINE, showAsOnline);
   }
 }
 

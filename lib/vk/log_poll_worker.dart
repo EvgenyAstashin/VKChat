@@ -5,7 +5,6 @@ import 'package:vk_chat/vk/events.dart';
 import 'package:vk_chat/vk/vk.dart';
 
 class LongPollWorker {
-
   EventBus _eventBus;
 
   String _server;
@@ -24,11 +23,11 @@ class LongPollWorker {
 
   void startPooling() {
     print("pooling startPooling " + _buildUrl());
-    if(!cancelled)
+    if (!cancelled)
       _getUpdates().then((http.Response response) {
         print("pooling " + response.body);
         Map<String, dynamic> map = json.decode(response.body);
-        if(map.containsKey('failed')) {
+        if (map.containsKey('failed')) {
           VK().startLongPoll();
         } else {
           _ts = map['ts'];
@@ -46,13 +45,14 @@ class LongPollWorker {
     return http.get(_buildUrl());
   }
 
-  void _error() {
-    VK vk = VK();
-    vk.startLongPoll();
-  }
-
   String _buildUrl() {
-    return 'https://' + _server + '?act=a_check&key=' + _key + '&ts='+_ts.toString() + '&wait=25&mode=2&version=2';
+    return 'https://' +
+        _server +
+        '?act=a_check&key=' +
+        _key +
+        '&ts=' +
+        _ts.toString() +
+        '&wait=25&mode=2&version=2';
   }
 
   void _update(List<dynamic> events) {

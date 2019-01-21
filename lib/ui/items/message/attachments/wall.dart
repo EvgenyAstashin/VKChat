@@ -4,7 +4,7 @@ import 'package:vk_chat/ui/items/message/attachments/attachments.dart';
 
 class WallWidget extends StatelessWidget {
 
-  Wall _wall;
+  final Wall _wall;
 
   WallWidget(this._wall);
 

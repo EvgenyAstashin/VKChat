@@ -3,7 +3,8 @@ import 'package:vk_chat/models/attachment/doc.dart';
 import 'package:vk_chat/ui/items/message/attachments/gif.dart';
 
 class DocWidget extends StatelessWidget {
-  Doc _doc;
+
+  final Doc _doc;
 
   DocWidget(this._doc);
 

@@ -10,8 +10,8 @@ class ChatsListPage extends StatefulWidget {
   State<StatefulWidget> createState() => new _ChatsListPageState();
 }
 
-class _ChatsListPageState extends State<ChatsListPage> with WidgetsBindingObserver {
-
+class _ChatsListPageState extends State<ChatsListPage>
+    with WidgetsBindingObserver {
   Widget mainWidget = new CircularProgressIndicator();
   VK vk = VK();
   ConversationHandler handler;
@@ -32,13 +32,18 @@ class _ChatsListPageState extends State<ChatsListPage> with WidgetsBindingObserv
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    int i = 1 + 1;
-    if(state == AppLifecycleState.resumed && !handler.isEmpty())
+    if (state == AppLifecycleState.resumed && !handler.isEmpty())
       setState(() {
         mainWidget = new CircularProgressIndicator();
         handler.clear();
         handler.getConversations(success, error);
       });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   void success() {
@@ -47,9 +52,7 @@ class _ChatsListPageState extends State<ChatsListPage> with WidgetsBindingObserv
       mainWidget = new ListView.builder(
           itemCount: conversations.length,
           itemBuilder: (BuildContext context, int index) {
-
-            Conversation conversation =
-            conversations.elementAt(index);
+            Conversation conversation = conversations.elementAt(index);
             if (index == conversations.length - 1)
               handler.getConversations(success, error);
             return new ConversationItem(conversation);
