@@ -3,23 +3,12 @@ class Events {
   static const int NEW_MESSAGE = 4;
   static const int USER_ONLINE = 8;
   static const int USER_OFFLINE = 9;
+  static const int USER_IS_TYPING = 61;
 
-  static Map<int, List<Event>> parse(List<dynamic> events) {
-    Map<int, List<Event>> map = new Map();
-    events.forEach((event) => _parse(event, map));
-    return map;
-  }
-
-  static void _parse(dynamic event, Map<int, List<Event>> map) {
-    Event parsedEvent = _parseEvent(event);
-    if(parsedEvent != null)
-      _addToMap(parsedEvent, map);
-  }
-
-  static void _addToMap(Event event, Map<int, List<Event>> map) {
-    if(!map.containsKey(event.eventKey))
-      map.putIfAbsent(event.eventKey, () => new List<Event>());
-    map[event.eventKey].add(event);
+  static List<Event>parse(List<dynamic> events) {
+    List<Event> list = List();
+    events.forEach((event) => list.add(_parseEvent(event)));
+    return list;
   }
 
   static Event _parseEvent(dynamic event) {
@@ -33,13 +22,12 @@ class Events {
           return UserOnline().parse(eventInnards);
         case USER_OFFLINE:
           return UserOffline().parse(eventInnards);
+        case USER_IS_TYPING:
+          return UserIsTyping().parse(eventInnards);
       }
-
     }
-
     return null;
   }
-
 }
 
 abstract class Event {
@@ -74,7 +62,6 @@ class UserOnline extends Event {
 
   @override
   Event parse(eventInnards) {
-    // TODO: implement parse
     return this;
   }
 }
@@ -85,7 +72,21 @@ class UserOffline extends Event {
 
   @override
   Event parse(eventInnards) {
-    // TODO: implement parse
+    return this;
+  }
+}
+
+class UserIsTyping extends Event {
+
+  int userId;
+  int flags;
+  
+  UserIsTyping() : super(Events.USER_IS_TYPING);
+
+  @override
+  Event parse(List eventInnards) {
+    userId = eventInnards[1];
+    flags = eventInnards[2];
     return this;
   }
 }

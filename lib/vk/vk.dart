@@ -101,23 +101,16 @@ class VK {
   }
 
   void _initNewMessageListener() {
-    _eventBus.on<List<Event>>().listen(_loadNewMessages);
+    _eventBus.on<NewMessage>().listen(_loadNewMessages);
   }
 
-  void _loadNewMessages(List<Event> events) {
-    if(events.length != 0 && events[0] is NewMessage) {
-      List<int> messageIds = List();
-      events.forEach((event) {
-        NewMessage newMessage = event;
-        messageIds.add(newMessage.messageId);
-      });
-      _api.getMessage(messageIds).then((messages) {
+  void _loadNewMessages(NewMessage newMessageEvent) {
+      _api.getMessage([newMessageEvent.messageId]).then((messages) {
         messages.forEach((message) {
           _setMessageToConversation(message);
           _eventBus.fire(message);
         });
       });
-    }
   }
 
   void _setMessageToConversation(Message message) {

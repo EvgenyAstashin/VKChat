@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:vk_chat/handlers/conversation_handler.dart';
 import 'package:vk_chat/handlers/history_handler.dart';
@@ -8,6 +10,7 @@ import 'package:vk_chat/models/message.dart';
 import 'package:vk_chat/models/profile.dart';
 import 'package:vk_chat/preferences.dart';
 import 'package:vk_chat/ui/items/message/message_item.dart';
+import 'package:vk_chat/vk/events.dart';
 import 'package:vk_chat/vk/vk.dart';
 
 class ChatPage extends StatefulWidget {
@@ -29,8 +32,12 @@ class _ChatPageState extends State<ChatPage> {
   Chat chat;
   VK vk;
   bool markAsRead;
+  StreamSubscription newMessageSubscription;
+  StreamSubscription userIsTypingSubscription;
+  Timer timer;
 
   Widget mainWidget;
+  Widget userIsTypingWidget;
 
   final myController = TextEditingController();
   ScrollController _scrollController = new ScrollController();
@@ -66,6 +73,7 @@ class _ChatPageState extends State<ChatPage> {
                       },
                       controller: _scrollController,
                     ))),
+            userIsTypingWidget,
             Row(
               children: <Widget>[
                 Expanded(
@@ -77,7 +85,7 @@ class _ChatPageState extends State<ChatPage> {
                               hintText: VkChatLocalizations.get('message')),
                           controller: myController,
                         ))),
-                IconButton(icon: new Icon(Icons.send), onPressed: sendMessage),
+                IconButton(icon: new Icon(Icons.send), onPressed: _sendMessage),
               ],
             )
           ],
@@ -90,17 +98,20 @@ class _ChatPageState extends State<ChatPage> {
     markAsRead = Preferences().settings.markAsRead;
     currentUser = vk.currentUser;
     mainWidget = _buildProgress();
+    userIsTypingWidget = emptyView();
 
     _loadFirstMessages();
 
     _registerScrollListener();
-    _registerEventListener();
+    _subscribeOnEvents();
     super.initState();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _unsubscribe();
+    _stopTimer();
     super.dispose();
   }
 
@@ -114,24 +125,24 @@ class _ChatPageState extends State<ChatPage> {
     vk.getHistoryHandler(conversation, (historyHandler, chat) {
       this.historyHandler = historyHandler;
       this.chat = chat;
-      this.historyHandler.getMessages(success, error);
-    }, error);
+      this.historyHandler.getMessages(_success, _error);
+    }, _error);
   }
 
   void _registerScrollListener() {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent)
-        historyHandler.getMessages(success, error);
+        historyHandler.getMessages(_success, _error);
     });
   }
 
-  void success() {
+  void _success() {
     if (markAsRead) vk.markAsRead(conversation.getId());
     setState(() {});
   }
 
-  void error() {
+  void _error() {
     print('error');
   }
 
@@ -156,7 +167,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  void sendMessage() {
+  void _sendMessage() {
     String text = myController.text;
     myController.clear();
     Message message = Message.createMessage(
@@ -164,23 +175,77 @@ class _ChatPageState extends State<ChatPage> {
         currentUser.id,
         conversation.getId(),
         text);
-    setMessage(message, true);
+    _setMessage(message, true);
     vk.sendMessage(message);
   }
 
-  void _registerEventListener() {
-    vk.getBus().on<Message>().listen((message) {
-      setMessage(message, false);
+  void _subscribeOnEvents() {
+    _subscribeOnNeMessage();
+    _subscribeOnUserIsTyping();
+  }
+
+  void _subscribeOnNeMessage() {
+    newMessageSubscription = vk.getBus().on<Message>().listen((message) {
+      _setMessage(message, false);
     });
   }
 
-  void setMessage(Message message, bool outgoing) {
+  void _subscribeOnUserIsTyping() {
+    newMessageSubscription = vk.getBus().on<UserIsTyping>().listen((event) {
+      _setTypingStatus(event.userId);
+    });
+  }
+
+  void _unsubscribe() {
+    newMessageSubscription.cancel();
+    userIsTypingSubscription.cancel();
+  }
+
+  void _setMessage(Message message, bool outgoing) {
     if (message.peerId == conversation.getId() &&
         (message.fromId != currentUser.id || outgoing)) {
+      _stopTimer();
       setState(() {
+        if(!outgoing)
+          userIsTypingWidget = emptyView();
         historyHandler.setMessage(message);
         FocusScope.of(context).requestFocus(new FocusNode());
       });
     }
+  }
+
+  void _setTypingStatus(int userId) {
+    if (userId == conversation.getId()) {
+      Profile user = conversationHandler.profiles[userId];
+      _stopTimer();
+      _startTypingTimer();
+      setState(() {
+        userIsTypingWidget = Container(
+          padding: EdgeInsets.all(2.0),
+          color: Color.fromARGB(255, 50, 50, 50),
+          child: Text(
+            '${user.firstName} ${user.lastName} ${VkChatLocalizations.get('user_is_typing')}',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white),
+          ),
+        );
+      });
+    }
+  }
+
+  void _startTypingTimer() {
+    timer = new Timer(const Duration(milliseconds: 6000), () {
+      setState(() {
+        userIsTypingWidget = emptyView();
+      });
+    });
+  }
+
+  Widget emptyView() {
+    return Container(width: 0.0, height: 0.0);
+  }
+
+  void _stopTimer() {
+    if (timer != null) timer.cancel();
   }
 }

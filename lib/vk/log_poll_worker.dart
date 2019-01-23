@@ -5,6 +5,7 @@ import 'package:vk_chat/vk/events.dart';
 import 'package:vk_chat/vk/vk.dart';
 
 class LongPollWorker {
+
   EventBus _eventBus;
 
   String _server;
@@ -56,7 +57,9 @@ class LongPollWorker {
   }
 
   void _update(List<dynamic> events) {
-    Map<int, List<Event>> eventsMap = Events.parse(events);
-    eventsMap.forEach((eventKey, eventsList) => _eventBus.fire(eventsList));
+    List<Event> parsedEvents = Events.parse(events);
+    parsedEvents.forEach((event) {
+      _eventBus.fire(event);
+    });
   }
 }

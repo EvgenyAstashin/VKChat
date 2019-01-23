@@ -59,7 +59,8 @@ class VkChatLocalizations {
       'pin_message_f': 'pin the message',
       'unpin_message_f': 'unpin the message',
 
-      'online': 'online'
+      'online': 'online',
+      'user_is_typing': 'is typing'
 
     },
     'ru': {
@@ -97,7 +98,8 @@ class VkChatLocalizations {
       'pin_message_f': 'закрепила сообщение',
       'unpin_message_f': 'открепила сообщение',
 
-      'online': 'online'
+      'online': 'online',
+      'user_is_typing': 'печатает'
     },
   };
 
